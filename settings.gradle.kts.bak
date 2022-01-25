@@ -1,0 +1,2 @@
+rootProject.name = "Quick"
+include(":app")
