@@ -21,14 +21,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ohyooo.calendar.*
+import com.ohyooo.calendar.util.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.util.concurrent.TimeUnit
 
 @Preview
 @Composable
@@ -98,14 +96,9 @@ fun CalendarHeader() {
 fun CalendarMonth(currentMonth: MutableState<LocalDateTime>) {
     val nowYearMonth = currentLocaleDate
 
-    val yearsAgo = nowYearMonth.minusYears(10)
     val nowDayOfMonth = nowYearMonth.dayOfMonth
 
-    val diff = nowYearMonth.toInstant(ZoneOffset.ofHours(8)).toEpochMilli() - yearsAgo.toInstant(ZoneOffset.ofHours(8)).toEpochMilli()
-
-    val days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS).toInt()
-
-    nowYearMonth.toLocalDate().lengthOfMonth()
+    val days = prevDaySize.toInt()
 
     var currentMonthRange by remember {
         mutableStateOf(days - nowDayOfMonth + 2..days + nowYearMonth.toLocalDate().lengthOfMonth() - nowDayOfMonth + 1)
@@ -144,7 +137,7 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>) {
                     modifier = Modifier
                         .fillMaxSize()
                         .aspectRatio(1F)
-                        .background(if (days == day) todayBgColor else Color.Transparent),
+                        .background(if (days == day - 1) todayBgColor else Color.Transparent),
                     contentAlignment = Alignment.Center
                 ) {
                     Box(
@@ -154,7 +147,7 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>) {
                     ) {
                         val modifier = Modifier.fillMaxSize()
                         Box(
-                            modifier = if (days == day) modifier.border(2.dp, color = mainBgColor) else modifier,
+                            modifier = if (days == day - 1) modifier.border(2.dp, color = mainBgColor) else modifier,
                             contentAlignment = Alignment.Center
                         ) {
                             Text(

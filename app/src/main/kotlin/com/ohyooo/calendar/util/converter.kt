@@ -1,8 +1,7 @@
-package com.ohyooo.calendar
+package com.ohyooo.calendar.util
 
 import androidx.annotation.IntRange
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
@@ -68,15 +67,8 @@ fun getHighlightRange(visibleRange: kotlin.ranges.IntRange): kotlin.ranges.IntRa
     return lastMaxDaysIndex - currentMonthDayCount + 1..lastMaxDaysIndex
 }
 
-
-val currentLocaleDate: LocalDateTime get() = LocalDate.now().atStartOfDay()
-
-fun getMonthDay(day: Int): LocalDateTime {
-    return currentLocaleDate.minusYears(10).plusDays(day.toLong() - 1)
-}
-
 fun getDay(day: Int): String {
-    val date = currentLocaleDate.minusYears(10).plusDays(day.toLong() - 1)
+    val date = firstDay.plusDays(day.toLong() - 1)
     // return "$day\n${date.year} ${date.monthValue} ${date.dayOfMonth}"
     return "${date.dayOfMonth}"
 }
