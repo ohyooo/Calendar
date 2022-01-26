@@ -41,9 +41,10 @@ import java.time.LocalDateTime
 @Preview
 @Composable
 fun CalendarMain(date: LocalDate = LocalDate.now()) {
-    val currentMonth = remember {
-        mutableStateOf(LocalDateTime.now())
-    }
+    val currentLocaleDate = currentLocaleDate
+    val prevDaySize = prevDaySize
+
+    val currentMonth = remember { mutableStateOf(currentLocaleDate) }
 
     Column(modifier = Modifier.background(mainBgColor)) {
         NowTime()
@@ -51,7 +52,7 @@ fun CalendarMain(date: LocalDate = LocalDate.now()) {
         Divider(color = Color.Gray)
 
         val state = rememberSaveable(saver = LazyGridState.Saver) {
-            LazyGridState(prevDaySize.toInt() - currentLocaleDate.dayOfMonth, 0)
+            LazyGridState(prevDaySize.toInt() - currentLocaleDate.dayOfMonth + 2, 0)
         }
 
         val coroutineScope = rememberCoroutineScope()
@@ -66,7 +67,7 @@ fun CalendarMain(date: LocalDate = LocalDate.now()) {
 
         CalendarWeekDays()
 
-        CalendarMonth(currentMonth, state, scrollState)
+        CalendarMonth(currentMonth, state, scrollState, currentLocaleDate, prevDaySize.toInt())
     }
 }
 
@@ -120,12 +121,9 @@ fun CalendarWeekDays() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CalendarMonth(currentMonth: MutableState<LocalDateTime>, state: LazyGridState, scrollState: StateClass) {
-    val nowDayOfMonth = currentLocaleDate.dayOfMonth
-    val days = prevDaySize.toInt()
-
+fun CalendarMonth(currentMonth: MutableState<LocalDateTime>, state: LazyGridState, scrollState: StateClass, nowLocaleDate: LocalDateTime, days: Int) {
     var currentMonthRange by remember {
-        mutableStateOf(days - nowDayOfMonth + 2..days + currentLocaleDate.toLocalDate().lengthOfMonth() - nowDayOfMonth + 1)
+        mutableStateOf(state.firstVisibleItemIndex..days + nowLocaleDate.toLocalDate().lengthOfMonth() - nowLocaleDate.dayOfMonth + 1)
     }
 
     val coroutineScope = rememberCoroutineScope()
