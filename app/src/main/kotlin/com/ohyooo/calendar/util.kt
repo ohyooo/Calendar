@@ -3,6 +3,7 @@ package com.ohyooo.calendar
 import androidx.annotation.IntRange
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -78,4 +79,45 @@ fun dayOfWeek(@IntRange(from = 0L, to = 6L) day: Int): String {
         7 -> "日"
         else -> throw IndexOutOfBoundsException("")
     }
+}
+
+fun getHighlightRange(visibleRange: kotlin.ranges.IntRange): kotlin.ranges.IntRange {
+    var currentMonth = 0
+    var currentMonthDayCount = 0
+    var maxMonthDayCount = 0
+    var lastMaxDaysIndex = 0
+    var isFirstVisibleMonth = 0
+
+    visibleRange.forEach { day ->
+        getMonthDay(day).apply {
+            if (currentMonth == first) {
+                ++currentMonthDayCount
+            } else {
+                if (isFirstVisibleMonth >= 2) return@forEach
+                isFirstVisibleMonth++
+
+                currentMonthDayCount = 1
+                currentMonth = first
+            }
+
+            if (currentMonthDayCount > maxMonthDayCount) {
+                maxMonthDayCount = currentMonthDayCount
+                lastMaxDaysIndex = day
+            }
+        }
+    }
+    return lastMaxDaysIndex - currentMonthDayCount + 1..lastMaxDaysIndex
+}
+
+
+val currentLocaleDate: LocalDateTime get() = LocalDate.now().atStartOfDay()
+
+fun getMonthDay(day: Int): Pair<Int, Int> {
+    val date = currentLocaleDate.minusYears(10).plusDays(day.toLong() - 1)
+    return date.monthValue to date.dayOfMonth
+}
+
+fun getDay(day: Int): String {
+    val date = currentLocaleDate.minusYears(10).plusDays(day.toLong() - 1)
+    return "$day\n${date.year} ${date.monthValue} ${date.dayOfMonth}"
 }
