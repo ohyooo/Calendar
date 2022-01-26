@@ -83,20 +83,21 @@ fun CalendarMain(date: LocalDate = LocalDate.now()) {
 @Composable
 fun Clock(onClick: () -> Unit) {
     Column(modifier = Modifier.padding(start = 12.dp, top = 16.dp, end = 12.dp, bottom = 16.dp)) {
-        var date by remember {
-            mutableStateOf(System.currentTimeMillis())
-        }
+        var time by remember { mutableStateOf("") }
+        var dat by remember { mutableStateOf("") }
 
         LaunchedEffect(this) {
             while (true) {
-                date = System.currentTimeMillis()
+                val date = System.currentTimeMillis()
+                time = hourMinuteSecond(date)
+                dat = yearMonthDay(date) + "，星期" + dayOfWeek(date)
                 delay(1000)
             }
         }
 
-        Text(text = hourMinuteSecond(date), fontSize = 32.sp, color = clockColor)
+        Text(text = time, fontSize = 32.sp, color = clockColor)
 
-        Text(text = yearMonthDay(date) + "，星期" + dayOfWeek(date), fontSize = 14.sp, color = dateColor, modifier = Modifier.clickable(onClick = onClick))
+        Text(text = dat, fontSize = 14.sp, color = dateColor, modifier = Modifier.clickable(onClick = onClick))
     }
 }
 
