@@ -46,9 +46,7 @@ fun CalendarMain(date: LocalDate = LocalDate.now()) {
     }
 
     Column(modifier = Modifier.background(mainBgColor)) {
-        Column(modifier = Modifier.padding(start = 12.dp, top = 16.dp, end = 12.dp, bottom = 16.dp)) {
-            NowTime()
-        }
+        NowTime()
 
         Divider(color = Color.Gray)
 
@@ -57,22 +55,24 @@ fun CalendarMain(date: LocalDate = LocalDate.now()) {
         }
 
         val coroutineScope = rememberCoroutineScope()
+        val scrollState = StateClass()
 
         CalendarTitle(currentMonth.value) { isUp ->
             coroutineScope.launch {
-                state.animateScrollToItem(state.firstVisibleItemIndex + 7 * 6 * if (isUp) -1 else 1)
+                state.animateScrollToItem(state.firstVisibleItemIndex + 7 * 6 * if (isUp) 1 else -1)
+                scrollState.onScroll(true)
             }
         }
 
         CalendarWeekDays()
 
-        CalendarMonth(currentMonth, state)
+        CalendarMonth(currentMonth, state, scrollState)
     }
 }
 
 @Composable
 fun NowTime() {
-    Column {
+    Column(modifier = Modifier.padding(start = 12.dp, top = 16.dp, end = 12.dp, bottom = 16.dp)) {
         var date by remember {
             mutableStateOf(System.currentTimeMillis())
         }
@@ -120,7 +120,7 @@ fun CalendarWeekDays() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CalendarMonth(currentMonth: MutableState<LocalDateTime>, state: LazyGridState) {
+fun CalendarMonth(currentMonth: MutableState<LocalDateTime>, state: LazyGridState, scrollState: StateClass) {
     val nowDayOfMonth = currentLocaleDate.dayOfMonth
     val days = prevDaySize.toInt()
 
@@ -133,22 +133,25 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>, state: LazyGridStat
 
     var firstItem = state.firstVisibleItemIndex
 
+    scrollState.onScroll = scroll@{
+        if (firstItem == state.firstVisibleItemIndex && !it) return@scroll
+        firstItem = state.firstVisibleItemIndex
+
+        job?.cancel()
+        job = coroutineScope.launch {
+            currentMonthRange = getHighlightRange(state.firstVisibleItemIndex..state.firstVisibleItemIndex + state.layoutInfo.visibleItemsInfo.size)
+            if (!this.isActive) return@launch
+            currentMonth.value = getMonthDay(currentMonthRange.first)
+        }
+    }
+
     LazyVerticalGrid(
         cells = GridCells.Fixed(7),
         state = state,
         modifier = Modifier.scrollable(
             orientation = Orientation.Vertical,
             state = rememberScrollableState { delta ->
-                if (firstItem == state.firstVisibleItemIndex) return@rememberScrollableState delta
-                firstItem = state.firstVisibleItemIndex
-
-                job?.cancel()
-                job = coroutineScope.launch {
-                    currentMonthRange = getHighlightRange(state.firstVisibleItemIndex..state.firstVisibleItemIndex + state.layoutInfo.visibleItemsInfo.size)
-                    if (!this.isActive) return@launch
-                    currentMonth.value = getMonthDay(currentMonthRange.first)
-                }
-
+                scrollState.onScroll(false)
                 delta
             }
         ),
