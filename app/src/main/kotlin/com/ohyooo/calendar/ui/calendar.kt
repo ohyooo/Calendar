@@ -40,9 +40,18 @@ fun CalendarMain(date: LocalDate = LocalDate.now()) {
     }
 
     Column(modifier = Modifier.background(mainBgColor)) {
-        NowTime()
-        Divider()
-        CalendarTitle(currentMonth.value)
+        Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)) {
+            NowTime()
+        }
+
+        Box(modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)) {
+            Divider(color = Color.Gray)
+        }
+
+        Box(modifier = Modifier.padding(start = 12.dp, top = 8.dp, bottom = 16.dp)) {
+            CalendarTitle(currentMonth.value)
+        }
+
         CalendarHeader()
         CalendarMonth(currentMonth)
     }
@@ -64,7 +73,7 @@ fun NowTime() {
 
         Text(text = hourMinuteSecond(date), fontSize = 32.sp, color = clockColor)
 
-        Text(text = yearMonthDay(date) + "，星期" + dayOfWeek(date), color = dateColor)
+        Text(text = yearMonthDay(date) + "，星期" + dayOfWeek(date), fontSize = 14.sp, color = dateColor)
     }
 }
 
@@ -72,7 +81,7 @@ fun NowTime() {
 @Composable
 fun CalendarTitle(date: LocalDateTime) {
     Row {
-        Text(text = monthYearFromDate(date), color = monthTitleColor)
+        Text(text = monthYearFromDate(date), color = monthTitleColor, fontSize = 16.sp)
     }
 }
 
@@ -140,9 +149,11 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>) {
                         .background(if (days == day) todayBgColor else Color.Transparent),
                     contentAlignment = Alignment.Center
                 ) {
-                    Box(modifier = Modifier
-                        .fillMaxSize()
-                        .padding(4.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(4.dp)
+                    ) {
                         val modifier = Modifier.fillMaxSize()
                         Box(
                             modifier = if (days == day) modifier.border(2.dp, color = mainBgColor) else modifier,
