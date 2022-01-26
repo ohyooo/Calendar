@@ -153,22 +153,29 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>) {
                         .background(if (days == day - 1) todayBgColor else Color.Transparent),
                     contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(4.dp)
-                    ) {
-                        val modifier = Modifier.fillMaxSize()
+                    val addText = @Composable {
+                        Text(
+                            text = getDay(day),
+                            color = if (day in currentMonthRange) dayOfHighlightedColor else dayOfNormalColor,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                    if (days == day - 1) {
                         Box(
-                            modifier = if (days == day - 1) modifier.border(2.dp, color = mainBgColor) else modifier,
-                            contentAlignment = Alignment.Center
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(2.dp)
                         ) {
-                            Text(
-                                text = getDay(day),
-                                color = if (day in currentMonthRange) dayOfHighlightedColor else dayOfNormalColor,
-                                textAlign = TextAlign.Center,
-                            )
+                            val modifier = Modifier.fillMaxSize()
+                            Box(
+                                modifier = modifier.border(2.dp, color = mainBgColor),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                addText()
+                            }
                         }
+                    } else {
+                        addText()
                     }
                 }
             }
