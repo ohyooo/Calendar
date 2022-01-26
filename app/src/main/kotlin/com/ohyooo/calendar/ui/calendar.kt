@@ -1,5 +1,6 @@
 package com.ohyooo.calendar.ui
 
+import androidx.compose.animation.core.AnimationConstants
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -46,21 +47,29 @@ fun CalendarMain(date: LocalDate = LocalDate.now()) {
 
     val currentMonth = remember { mutableStateOf(currentLocaleDate) }
 
+    val state = rememberSaveable(saver = LazyGridState.Saver) {
+        LazyGridState(prevDaySize.toInt() - currentLocaleDate.dayOfMonth + 2, 0)
+    }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    val scrollState = StateClass()
+
     Column(modifier = Modifier.background(mainBgColor)) {
-        NowTime()
-
-        Divider(color = Color.Gray)
-
-        val state = rememberSaveable(saver = LazyGridState.Saver) {
-            LazyGridState(prevDaySize.toInt() - currentLocaleDate.dayOfMonth + 2, 0)
+        Clock {
+            coroutineScope.launch {
+                state.animateScrollToItem(prevDaySize.toInt() - currentLocaleDate.dayOfMonth + 2)
+                delay(AnimationConstants.DefaultDurationMillis.toLong())
+                scrollState.onScroll(true)
+            }
         }
 
-        val coroutineScope = rememberCoroutineScope()
-        val scrollState = StateClass()
+        Divider(color = Color.Gray)
 
         CalendarTitle(currentMonth.value) { isUp ->
             coroutineScope.launch {
                 state.animateScrollToItem(state.firstVisibleItemIndex + 7 * 6 * if (isUp) 1 else -1)
+                delay(AnimationConstants.DefaultDurationMillis.toLong())
                 scrollState.onScroll(true)
             }
         }
@@ -72,7 +81,7 @@ fun CalendarMain(date: LocalDate = LocalDate.now()) {
 }
 
 @Composable
-fun NowTime() {
+fun Clock(onClick: () -> Unit) {
     Column(modifier = Modifier.padding(start = 12.dp, top = 16.dp, end = 12.dp, bottom = 16.dp)) {
         var date by remember {
             mutableStateOf(System.currentTimeMillis())
@@ -87,7 +96,7 @@ fun NowTime() {
 
         Text(text = hourMinuteSecond(date), fontSize = 32.sp, color = clockColor)
 
-        Text(text = yearMonthDay(date) + "，星期" + dayOfWeek(date), fontSize = 14.sp, color = dateColor)
+        Text(text = yearMonthDay(date) + "，星期" + dayOfWeek(date), fontSize = 14.sp, color = dateColor, modifier = Modifier.clickable(onClick = onClick))
     }
 }
 
