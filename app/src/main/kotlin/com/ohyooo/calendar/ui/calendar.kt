@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.ohyooo.calendar.util.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -144,6 +145,7 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>, state: LazyGridStat
                 job?.cancel()
                 job = coroutineScope.launch {
                     currentMonthRange = getHighlightRange(state.firstVisibleItemIndex..state.firstVisibleItemIndex + state.layoutInfo.visibleItemsInfo.size)
+                    if (!this.isActive) return@launch
                     currentMonth.value = getMonthDay(currentMonthRange.first)
                 }
 
