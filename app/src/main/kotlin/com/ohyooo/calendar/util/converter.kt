@@ -39,6 +39,19 @@ fun dayOfWeek(@IntRange(from = 0L, to = 6L) day: Int): String {
     }
 }
 
+fun saturdayOfWeek(@IntRange(from = 0L, to = 6L) day: Int): String {
+    return when (day + 1) {
+        1 -> "日"
+        2 -> "一"
+        3 -> "二"
+        4 -> "三"
+        5 -> "四"
+        6 -> "五"
+        7 -> "六"
+        else -> throw IndexOutOfBoundsException("")
+    }
+}
+
 fun getHighlightRange(visibleRange: kotlin.ranges.IntRange): kotlin.ranges.IntRange {
     var currentMonth = 0
     var currentMonthDayCount = 0

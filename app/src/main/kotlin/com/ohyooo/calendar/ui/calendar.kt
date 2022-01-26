@@ -99,7 +99,7 @@ fun CalendarTitle(date: LocalDateTime) {
 fun CalendarHeader() {
     LazyVerticalGrid(cells = GridCells.Fixed(7), content = {
         items(count = 7) {
-            Text(text = dayOfWeek(it), textAlign = TextAlign.Center, color = dayOfWeekColor)
+            Text(text = saturdayOfWeek(it), textAlign = TextAlign.Center, color = dayOfWeekColor)
         }
     })
 }
