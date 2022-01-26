@@ -159,7 +159,8 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>, state: LazyGridStat
                     modifier = Modifier
                         .fillMaxSize()
                         .aspectRatio(1F)
-                        .background(if (days == day - 1) todayBgColor else Color.Transparent),
+                        .background(if (days == day - 1) todayBgColor else Color.Transparent)
+                        .clickable {},
                     contentAlignment = Alignment.Center
                 ) {
                     val addText = @Composable {
