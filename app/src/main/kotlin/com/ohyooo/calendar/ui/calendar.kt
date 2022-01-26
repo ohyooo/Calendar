@@ -11,14 +11,21 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyGridState
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ExpandLess
+import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ohyooo.calendar.util.*
@@ -36,17 +43,13 @@ fun CalendarMain(date: LocalDate = LocalDate.now()) {
     }
 
     Column(modifier = Modifier.background(mainBgColor)) {
-        Column(modifier = Modifier.padding(start = 12.dp, top = 16.dp, end = 12.dp)) {
+        Column(modifier = Modifier.padding(start = 12.dp, top = 16.dp, end = 12.dp, bottom = 16.dp)) {
             NowTime()
         }
 
-        Box(modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)) {
-            Divider(color = Color.Gray)
-        }
+        Divider(color = Color.Gray)
 
-        Box(modifier = Modifier.padding(start = 12.dp, top = 8.dp, bottom = 16.dp)) {
-            CalendarTitle(currentMonth.value)
-        }
+        CalendarTitle(currentMonth.value)
 
         CalendarHeader()
         CalendarMonth(currentMonth)
@@ -73,11 +76,21 @@ fun NowTime() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CalendarTitle(date: LocalDateTime) {
     Row {
-        Text(text = monthYearFromDate(date), color = monthTitleColor, fontSize = 16.sp)
+        Text(
+            text = monthYearFromDate(date),
+            modifier = Modifier
+                .weight(1F)
+                .padding(start = 12.dp, top = 16.dp, end = 12.dp, bottom = 16.dp),
+            color = monthTitleColor,
+            fontSize = 16.sp
+        )
+        val size = LocalConfiguration.current.screenWidthDp / 7
+
+        ScrollIcon(Icons.Outlined.ExpandMore, size.dp, "UP")
+        ScrollIcon(Icons.Outlined.ExpandLess, size.dp, "DOWN")
     }
 }
 
@@ -161,4 +174,19 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>) {
             }
         }
     )
+}
+
+@Composable
+fun ScrollIcon(imageVector: ImageVector, size: Dp, contentDescription: String) {
+    Box(
+        modifier = Modifier
+            .width(size)
+            .height(size),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = imageVector,
+            modifier = Modifier.size(32.dp), contentDescription = contentDescription, tint = monthTitleColor
+        )
+    }
 }
