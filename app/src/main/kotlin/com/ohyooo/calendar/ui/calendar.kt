@@ -21,7 +21,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ohyooo.calendar.*
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.ZoneOffset
 import java.util.concurrent.TimeUnit
@@ -96,6 +98,9 @@ fun CalendarMonth() {
         LazyGridState(days - nowDayOfMonth, 0)
     }
 
+    val coroutineScope = rememberCoroutineScope()
+    var job: Job? = null
+
     var firstItem = state.firstVisibleItemIndex
     LazyVerticalGrid(
         cells = GridCells.Fixed(7),
@@ -105,8 +110,10 @@ fun CalendarMonth() {
             state = rememberScrollableState { delta ->
                 if (firstItem == state.firstVisibleItemIndex) return@rememberScrollableState delta
                 firstItem = state.firstVisibleItemIndex
-
-                currentMonthRange = getHighlightRange(state.firstVisibleItemIndex..state.firstVisibleItemIndex + state.layoutInfo.visibleItemsInfo.size)
+                job?.cancel()
+                job = coroutineScope.launch {
+                    currentMonthRange = getHighlightRange(state.firstVisibleItemIndex..state.firstVisibleItemIndex + state.layoutInfo.visibleItemsInfo.size)
+                }
 
                 delta
             }
