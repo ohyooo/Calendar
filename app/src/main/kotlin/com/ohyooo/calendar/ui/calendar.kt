@@ -36,7 +36,7 @@ fun CalendarMain(date: LocalDate = LocalDate.now()) {
     }
 
     Column(modifier = Modifier.background(mainBgColor)) {
-        Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)) {
+        Column(modifier = Modifier.padding(start = 12.dp, top = 16.dp, end = 12.dp)) {
             NowTime()
         }
 
