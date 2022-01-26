@@ -53,7 +53,9 @@ fun NowTime() {
                 delay(1000)
             }
         }
+
         Text(text = hourMinuteSecond(date), fontSize = 32.sp)
+
         Text(text = yearMonthDay(date) + "，星期" + dayOfWeek(date))
     }
 }
@@ -102,6 +104,7 @@ fun CalendarMonth() {
     var job: Job? = null
 
     var firstItem = state.firstVisibleItemIndex
+
     LazyVerticalGrid(
         cells = GridCells.Fixed(7),
         state = state,
@@ -110,6 +113,7 @@ fun CalendarMonth() {
             state = rememberScrollableState { delta ->
                 if (firstItem == state.firstVisibleItemIndex) return@rememberScrollableState delta
                 firstItem = state.firstVisibleItemIndex
+
                 job?.cancel()
                 job = coroutineScope.launch {
                     currentMonthRange = getHighlightRange(state.firstVisibleItemIndex..state.firstVisibleItemIndex + state.layoutInfo.visibleItemsInfo.size)
