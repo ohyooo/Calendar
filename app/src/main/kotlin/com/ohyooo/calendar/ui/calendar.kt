@@ -16,9 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -159,44 +157,14 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>) {
                             modifier = if (days == day) modifier.border(2.dp, color = mainBgColor) else modifier,
                             contentAlignment = Alignment.Center
                         ) {
-                            AutoSizeText(
+                            Text(
                                 text = getDay(day),
                                 color = if (day in currentMonthRange) dayOfHighlightedColor else dayOfNormalColor,
+                                textAlign = TextAlign.Center,
                             )
                         }
                     }
                 }
-            }
-        }
-    )
-}
-
-@Composable
-fun AutoSizeText(
-    modifier: Modifier = Modifier,
-    text: String,
-    textStyle: TextStyle = TextStyle.Default,
-    color: Color = Color.Unspecified,
-) {
-    var scaledTextStyle by remember { mutableStateOf(textStyle) }
-    var readyToDraw by remember { mutableStateOf(false) }
-
-    Text(
-        text,
-        modifier.drawWithContent {
-            if (readyToDraw) {
-                drawContent()
-            }
-        },
-        color = color,
-        style = scaledTextStyle,
-        softWrap = false,
-        textAlign = TextAlign.Center,
-        onTextLayout = { textLayoutResult ->
-            if (textLayoutResult.didOverflowWidth) {
-                scaledTextStyle = scaledTextStyle.copy(fontSize = scaledTextStyle.fontSize * 0.9)
-            } else {
-                readyToDraw = true
             }
         }
     )
