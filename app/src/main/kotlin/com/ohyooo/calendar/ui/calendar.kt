@@ -3,6 +3,7 @@ package com.ohyooo.calendar.ui
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
@@ -35,6 +36,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun CalendarMain(date: LocalDate = LocalDate.now()) {
@@ -49,10 +51,21 @@ fun CalendarMain(date: LocalDate = LocalDate.now()) {
 
         Divider(color = Color.Gray)
 
-        CalendarTitle(currentMonth.value)
+        val state = rememberSaveable(saver = LazyGridState.Saver) {
+            LazyGridState(prevDaySize.toInt() - currentLocaleDate.dayOfMonth, 0)
+        }
 
-        CalendarHeader()
-        CalendarMonth(currentMonth)
+        val coroutineScope = rememberCoroutineScope()
+
+        CalendarTitle(currentMonth.value) { isUp ->
+            coroutineScope.launch {
+                state.animateScrollToItem(state.firstVisibleItemIndex + 7 * 6 * if (isUp) -1 else 1)
+            }
+        }
+
+        CalendarWeekDays()
+
+        CalendarMonth(currentMonth, state)
     }
 }
 
@@ -77,7 +90,7 @@ fun NowTime() {
 }
 
 @Composable
-fun CalendarTitle(date: LocalDateTime) {
+fun CalendarTitle(date: LocalDateTime, onClick: (Boolean) -> Unit) {
     Row {
         Text(
             text = monthYearFromDate(date),
@@ -89,14 +102,14 @@ fun CalendarTitle(date: LocalDateTime) {
         )
         val size = LocalConfiguration.current.screenWidthDp / 7
 
-        ScrollIcon(Icons.Outlined.ExpandMore, size.dp, "UP")
-        ScrollIcon(Icons.Outlined.ExpandLess, size.dp, "DOWN")
+        ScrollIcon(Icons.Outlined.ExpandMore, size.dp, "UP") { onClick(true) }
+        ScrollIcon(Icons.Outlined.ExpandLess, size.dp, "DOWN") { onClick(false) }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CalendarHeader() {
+fun CalendarWeekDays() {
     LazyVerticalGrid(cells = GridCells.Fixed(7), content = {
         items(count = 7) {
             Text(text = saturdayOfWeek(it), textAlign = TextAlign.Center, color = dayOfWeekColor)
@@ -106,19 +119,12 @@ fun CalendarHeader() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CalendarMonth(currentMonth: MutableState<LocalDateTime>) {
-    val nowYearMonth = currentLocaleDate
-
-    val nowDayOfMonth = nowYearMonth.dayOfMonth
-
+fun CalendarMonth(currentMonth: MutableState<LocalDateTime>, state: LazyGridState) {
+    val nowDayOfMonth = currentLocaleDate.dayOfMonth
     val days = prevDaySize.toInt()
 
     var currentMonthRange by remember {
-        mutableStateOf(days - nowDayOfMonth + 2..days + nowYearMonth.toLocalDate().lengthOfMonth() - nowDayOfMonth + 1)
-    }
-
-    val state = rememberSaveable(saver = LazyGridState.Saver) {
-        LazyGridState(days - nowDayOfMonth, 0)
+        mutableStateOf(days - nowDayOfMonth + 2..days + currentLocaleDate.toLocalDate().lengthOfMonth() - nowDayOfMonth + 1)
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -184,11 +190,12 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>) {
 }
 
 @Composable
-fun ScrollIcon(imageVector: ImageVector, size: Dp, contentDescription: String) {
+fun ScrollIcon(imageVector: ImageVector, size: Dp, contentDescription: String, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .width(size)
-            .height(size),
+            .height(size)
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Icon(
