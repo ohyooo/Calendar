@@ -35,6 +35,10 @@ object Libs {
         const val ui = "androidx.compose.ui:ui:$composeVersion"
     }
 
+    object Accompanist {
+        const val flowlayout = "com.google.accompanist:accompanist-flowlayout:0.24.0-alpha"
+    }
+
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.4.1"
         const val coreKtx = "androidx.core:core-ktx:1.8.0-alpha02"
@@ -57,6 +61,7 @@ object Libs {
         Compose.runtime,
         Compose.tooling,
         Compose.ui,
+        Accompanist.flowlayout,
         Kotlin.coroutines,
         Kotlin.stdlib,
     )
