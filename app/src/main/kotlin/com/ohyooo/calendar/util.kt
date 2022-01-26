@@ -77,5 +77,6 @@ fun getMonthDay(day: Int): LocalDateTime {
 
 fun getDay(day: Int): String {
     val date = currentLocaleDate.minusYears(10).plusDays(day.toLong() - 1)
-    return "$day\n${date.year} ${date.monthValue} ${date.dayOfMonth}"
+    // return "$day\n${date.year} ${date.monthValue} ${date.dayOfMonth}"
+    return "${date.dayOfMonth}"
 }

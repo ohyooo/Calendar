@@ -2,6 +2,7 @@ package com.ohyooo.calendar.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
@@ -15,7 +16,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,7 +39,7 @@ fun CalendarMain(date: LocalDate = LocalDate.now()) {
         mutableStateOf(LocalDateTime.now())
     }
 
-    Column {
+    Column(modifier = Modifier.background(mainBgColor)) {
         NowTime()
         Divider()
         CalendarTitle(currentMonth.value)
@@ -59,9 +62,9 @@ fun NowTime() {
             }
         }
 
-        Text(text = hourMinuteSecond(date), fontSize = 32.sp)
+        Text(text = hourMinuteSecond(date), fontSize = 32.sp, color = clockColor)
 
-        Text(text = yearMonthDay(date) + "，星期" + dayOfWeek(date))
+        Text(text = yearMonthDay(date) + "，星期" + dayOfWeek(date), color = dateColor)
     }
 }
 
@@ -69,7 +72,7 @@ fun NowTime() {
 @Composable
 fun CalendarTitle(date: LocalDateTime) {
     Row {
-        Text(text = monthYearFromDate(date))
+        Text(text = monthYearFromDate(date), color = monthTitleColor)
     }
 }
 
@@ -78,7 +81,7 @@ fun CalendarTitle(date: LocalDateTime) {
 fun CalendarHeader() {
     LazyVerticalGrid(cells = GridCells.Fixed(7), content = {
         items(count = 7) {
-            Text(text = dayOfWeek(it), textAlign = TextAlign.Center)
+            Text(text = dayOfWeek(it), textAlign = TextAlign.Center, color = dayOfWeekColor)
         }
     })
 }
@@ -132,14 +135,25 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>) {
             items(count = days * 2) { day ->
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
+                        .fillMaxSize()
                         .aspectRatio(1F)
-                        .padding(0.5.dp)
-                        .background(if (day in currentMonthRange) Color.Magenta else Color.DarkGray),
+                        .background(if (days == day) todayBgColor else Color.Transparent),
                     contentAlignment = Alignment.Center
                 ) {
-                    Day(day)
+                    Box(modifier = Modifier
+                        .fillMaxSize()
+                        .padding(4.dp)) {
+                        val modifier = Modifier.fillMaxSize()
+                        Box(
+                            modifier = if (days == day) modifier.border(2.dp, color = mainBgColor) else modifier,
+                            contentAlignment = Alignment.Center
+                        ) {
+                            AutoSizeText(
+                                text = getDay(day),
+                                color = if (day in currentMonthRange) dayOfHighlightedColor else dayOfNormalColor,
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -147,11 +161,32 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>) {
 }
 
 @Composable
-private fun Day(day: Int) {
+fun AutoSizeText(
+    modifier: Modifier = Modifier,
+    text: String,
+    textStyle: TextStyle = TextStyle.Default,
+    color: Color = Color.Unspecified,
+) {
+    var scaledTextStyle by remember { mutableStateOf(textStyle) }
+    var readyToDraw by remember { mutableStateOf(false) }
+
     Text(
-        text = getDay(day),
-        color = Color.White,
+        text,
+        modifier.drawWithContent {
+            if (readyToDraw) {
+                drawContent()
+            }
+        },
+        color = color,
+        style = scaledTextStyle,
+        softWrap = false,
         textAlign = TextAlign.Center,
-        fontSize = 8.sp,
+        onTextLayout = { textLayoutResult ->
+            if (textLayoutResult.didOverflowWidth) {
+                scaledTextStyle = scaledTextStyle.copy(fontSize = scaledTextStyle.fontSize * 0.9)
+            } else {
+                readyToDraw = true
+            }
+        }
     )
 }
