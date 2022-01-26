@@ -13,3 +13,31 @@ val firstDay: LocalDateTime get() = currentLocaleDate.minusDays(prevDaySize)
 fun getMonthDay(day: Int): LocalDateTime {
     return firstDay.plusDays(day.toLong() - 1)
 }
+
+fun getHighlightRange(visibleRange: IntRange): IntRange {
+    var currentMonth = 0
+    var currentMonthDayCount = 0
+    var maxMonthDayCount = 0
+    var lastMaxDaysIndex = 0
+    var isFirstVisibleMonth = 0
+
+    visibleRange.forEach { day ->
+        getMonthDay(day).apply {
+            if (currentMonth == monthValue) {
+                ++currentMonthDayCount
+            } else {
+                if (isFirstVisibleMonth >= 2) return@forEach
+                isFirstVisibleMonth++
+
+                currentMonthDayCount = 1
+                currentMonth = monthValue
+            }
+
+            if (currentMonthDayCount > maxMonthDayCount) {
+                maxMonthDayCount = currentMonthDayCount
+                lastMaxDaysIndex = day
+            }
+        }
+    }
+    return lastMaxDaysIndex - maxMonthDayCount + 1..lastMaxDaysIndex
+}

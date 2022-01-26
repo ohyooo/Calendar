@@ -52,34 +52,6 @@ fun saturdayOfWeek(@IntRange(from = 0L, to = 6L) day: Int): String {
     }
 }
 
-fun getHighlightRange(visibleRange: kotlin.ranges.IntRange): kotlin.ranges.IntRange {
-    var currentMonth = 0
-    var currentMonthDayCount = 0
-    var maxMonthDayCount = 0
-    var lastMaxDaysIndex = 0
-    var isFirstVisibleMonth = 0
-
-    visibleRange.forEach { day ->
-        getMonthDay(day).apply {
-            if (currentMonth == monthValue) {
-                ++currentMonthDayCount
-            } else {
-                if (isFirstVisibleMonth >= 2) return@forEach
-                isFirstVisibleMonth++
-
-                currentMonthDayCount = 1
-                currentMonth = monthValue
-            }
-
-            if (currentMonthDayCount > maxMonthDayCount) {
-                maxMonthDayCount = currentMonthDayCount
-                lastMaxDaysIndex = day
-            }
-        }
-    }
-    return lastMaxDaysIndex - currentMonthDayCount + 1..lastMaxDaysIndex
-}
-
 fun getDay(day: Int): String {
     val date = firstDay.plusDays(day.toLong() - 1)
     // return "$day\n${date.year} ${date.monthValue} ${date.dayOfMonth}"
