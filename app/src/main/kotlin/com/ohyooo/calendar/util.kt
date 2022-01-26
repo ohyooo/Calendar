@@ -4,54 +4,13 @@ import androidx.annotation.IntRange
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.YearMonth
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
+import java.time.ZoneOffset
 import java.util.*
 
-fun daysInMonthArray(date: LocalDate, selectedDate: LocalDate = LocalDate.now()): List<String> {
-    val daysInMonthArray = ArrayList<String>()
-
-    val yearMonth = YearMonth.from(date)
-
-    val daysInMonth = yearMonth.lengthOfMonth()
-
-    val firstOfMonth = selectedDate.withDayOfMonth(1)
-
-    val dayOfWeek = firstOfMonth.dayOfWeek.value
-
-    for (i in 1..42) {
-        if (i <= dayOfWeek || i > daysInMonth + dayOfWeek) {
-            daysInMonthArray.add("")
-        } else {
-            daysInMonthArray.add((i - dayOfWeek).toString())
-        }
-    }
-    return daysInMonthArray
-}
-
-fun daysInMonthArray(ym: YearMonth, selectedDate: LocalDate = LocalDate.now()): List<String> {
-    val daysInMonthArray = ArrayList<String>()
-
-    val daysInMonth = ym.lengthOfMonth()
-
-    val firstOfMonth = selectedDate.withDayOfMonth(1)
-
-    val dayOfWeek = firstOfMonth.dayOfWeek.value
-
-    for (i in 1..42) {
-        if (i <= dayOfWeek || i > daysInMonth + dayOfWeek) {
-            daysInMonthArray.add("")
-        } else {
-            daysInMonthArray.add((i - dayOfWeek).toString())
-        }
-    }
-    return daysInMonthArray
-}
-
-fun monthYearFromDate(date: LocalDate): String {
-    val formatter = DateTimeFormatter.ofPattern("yyyy年MMMM")
-    return date.format(formatter)
+fun monthYearFromDate(date: LocalDateTime): String {
+    val formatter = SimpleDateFormat("yyyy年MMMM", Locale.getDefault())
+    return formatter.format(date.toInstant(ZoneOffset.ofHours(8)).toEpochMilli())
 }
 
 fun hourMinuteSecond(date: Long): String {
@@ -90,14 +49,14 @@ fun getHighlightRange(visibleRange: kotlin.ranges.IntRange): kotlin.ranges.IntRa
 
     visibleRange.forEach { day ->
         getMonthDay(day).apply {
-            if (currentMonth == first) {
+            if (currentMonth == monthValue) {
                 ++currentMonthDayCount
             } else {
                 if (isFirstVisibleMonth >= 2) return@forEach
                 isFirstVisibleMonth++
 
                 currentMonthDayCount = 1
-                currentMonth = first
+                currentMonth = monthValue
             }
 
             if (currentMonthDayCount > maxMonthDayCount) {
@@ -112,9 +71,8 @@ fun getHighlightRange(visibleRange: kotlin.ranges.IntRange): kotlin.ranges.IntRa
 
 val currentLocaleDate: LocalDateTime get() = LocalDate.now().atStartOfDay()
 
-fun getMonthDay(day: Int): Pair<Int, Int> {
-    val date = currentLocaleDate.minusYears(10).plusDays(day.toLong() - 1)
-    return date.monthValue to date.dayOfMonth
+fun getMonthDay(day: Int): LocalDateTime {
+    return currentLocaleDate.minusYears(10).plusDays(day.toLong() - 1)
 }
 
 fun getDay(day: Int): String {

@@ -25,18 +25,23 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.concurrent.TimeUnit
 
 @Preview
 @Composable
 fun CalendarMain(date: LocalDate = LocalDate.now()) {
+    val currentMonth = remember {
+        mutableStateOf(LocalDateTime.now())
+    }
+
     Column {
         NowTime()
         Divider()
-        CalendarTitle(date)
+        CalendarTitle(currentMonth.value)
         CalendarHeader()
-        CalendarMonth()
+        CalendarMonth(currentMonth)
     }
 }
 
@@ -62,7 +67,7 @@ fun NowTime() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CalendarTitle(date: LocalDate) {
+fun CalendarTitle(date: LocalDateTime) {
     Row {
         Text(text = monthYearFromDate(date))
     }
@@ -80,7 +85,7 @@ fun CalendarHeader() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CalendarMonth() {
+fun CalendarMonth(currentMonth: MutableState<LocalDateTime>) {
     val nowYearMonth = currentLocaleDate
 
     val yearsAgo = nowYearMonth.minusYears(10)
@@ -117,6 +122,7 @@ fun CalendarMonth() {
                 job?.cancel()
                 job = coroutineScope.launch {
                     currentMonthRange = getHighlightRange(state.firstVisibleItemIndex..state.firstVisibleItemIndex + state.layoutInfo.visibleItemsInfo.size)
+                    currentMonth.value = getMonthDay(currentMonthRange.first)
                 }
 
                 delta
