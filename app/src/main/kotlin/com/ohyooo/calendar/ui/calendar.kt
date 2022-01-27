@@ -193,7 +193,7 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>, state: LazyGridStat
                 ) {
                     val addText = @Composable {
                         Text(
-                            text = getDay(day),
+                            text = getLunarDay(day),
                             color = if (day in currentMonthRange) dayOfHighlightedColor else dayOfNormalColor,
                             textAlign = TextAlign.Center,
                         )

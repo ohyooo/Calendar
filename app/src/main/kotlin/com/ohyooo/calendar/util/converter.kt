@@ -53,22 +53,22 @@ fun saturdayOfWeek(@IntRange(from = 0L, to = 6L) day: Int): String {
 }
 
 fun getDay(day: Int): String {
-    // val date = firstDay.plusDays(day.toLong() - 1)
-    // return "$day\n${date.year} ${date.monthValue} ${date.dayOfMonth}"
-    return getLunarDay(day)
+    val date = firstDay.plusDays(day.toLong() - 1)
+    return "$day\n${date.year} ${date.monthValue} ${date.dayOfMonth}"
+    // return getLunarDay(day)
 }
 
 fun getLunarDay(day: Int): String {
-    val date = firstDay.plusDays(day.toLong() - 1)
+    val date = firstDay.plusDays(day.toLong() - 1).toLocalDate()
     // return "$day\n${date.year} ${date.monthValue} ${date.dayOfMonth}"
 
     // festival.initLunarCalendarInfo("2021-06-25")
-    LunarCalendarFestivalUtils.initLunarCalendarInfo("${date.year}-${date.monthValue}-${date.dayOfMonth}")
+    LunarCalendarFestivalUtils.initLunarCalendarInfo(date)
     // println("农历" + festival.lunarYear + "年" + festival.lunarMonth + "月" + festival.lunarDay + "日")
     // println(festival.ganZhiYear + "【" + festival.animal + "】年")
     // println(festival.lunarTerm)
     // println(festival.solarFestival)
     // println(festival.lunarFestival)
 
-    return "${date.dayOfMonth}\n${LunarCalendarFestivalUtils.lunarDay}"
+    return "${date.dayOfMonth}\n${LunarCalendarFestivalUtils.lunarTerm.ifBlank { LunarCalendarFestivalUtils.lunarDay }}"
 }

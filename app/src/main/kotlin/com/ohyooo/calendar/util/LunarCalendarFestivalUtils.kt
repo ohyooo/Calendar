@@ -359,11 +359,9 @@ object LunarCalendarFestivalUtils {
         val num = year - 1900 + 36
         ganZhiYear = tGan[num % 10] + dZhi[num % 12]
         ///////////设置阴历/////////////////////////////////////////////////////////
-        //基准日期
-        val baseDate = LocalDate.of(1900, 1, 31)
 
         // 获取当前日期与1900年1月31日相差的天数
-        var offset = DAYS.between(currentDate, baseDate).toInt()
+        var offset = DAYS.between(baseDate, currentDate).toInt()
 
         //用offset减去每农历年的天数，计算当天是农历第几天 iYear最终结果是农历的年份
         var daysOfYear = 0
