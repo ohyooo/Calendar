@@ -274,15 +274,12 @@ object LunarCalendarFestivalUtils {
      */
     private fun sTerm(year: Int, n: Int): Int {
         val centuryValue: Double //节气的世纪值，每个节气的每个世纪值都不同
-        val centuryIndex = if (year in 1901..2000) { //20世纪
-            0
-        } else if (year in 2001..2100) { //21世纪
-            1
-        } else {
-            throw RuntimeException("不支持此年份：$year，目前只支持1901年到2100年的时间范围")
+        val centuryIndex = when (year) {
+            in 1901..2000 -> 0 //20世纪
+            in 2001..2100 -> 1 //21世纪
+            else -> return Int.MIN_VALUE // throw RuntimeException("不支持此年份：$year，目前只支持1901年到2100年的时间范围")
         }
         centuryValue = CENTURY_ARRAY[centuryIndex][n]
-        var dateNum = 0
         var y = year % 100 //步骤1:取年分的后两位数
         if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) { //闰年
             if (n == 0 || n == 1 || n == 2 || n == 3) {
@@ -290,7 +287,7 @@ object LunarCalendarFestivalUtils {
                 y -= 1 //步骤2
             }
         }
-        dateNum = (y * D + centuryValue).toInt() - (y / 4) //步骤3，使用公式[Y*D+C]-L计算
+        var dateNum = (y * D + centuryValue).toInt() - (y / 4) //步骤3，使用公式[Y*D+C]-L计算
         dateNum += specialYearOffset(year, n) //步骤4，加上特殊的年分的节气偏移量
         return dateNum
     }
@@ -445,12 +442,10 @@ object LunarCalendarFestivalUtils {
         //设置节气
         val month = splitDate[1].toInt()
         val day = splitDate[2].toInt()
-        if (day == sTerm(year, (month - 1) * 2)) {
-            lunarTerm = solarTerms[(month - 1) * 2]
-        } else if (day == sTerm(year, (month - 1) * 2 + 1)) {
-            lunarTerm = solarTerms[(month - 1) * 2 + 1]
-        } else {
-            lunarTerm = ""
+        lunarTerm = when (day) {
+            sTerm(year, (month - 1) * 2) -> solarTerms[(month - 1) * 2]
+            sTerm(year, (month - 1) * 2 + 1) -> solarTerms[(month - 1) * 2 + 1]
+            else -> ""
         }
 
         //设置阳历节日
@@ -462,7 +457,7 @@ object LunarCalendarFestivalUtils {
             val smonth_v = splitDate[1]
             val sday_v = splitDate[2]
             val smd = smonth_v + sday_v
-            if (sd.trim { it <= ' ' } == smd.trim { it <= ' ' }) {
+            if (sd.trim() == smd.trim()) {
                 solarFestival = sdv
                 break
             }
