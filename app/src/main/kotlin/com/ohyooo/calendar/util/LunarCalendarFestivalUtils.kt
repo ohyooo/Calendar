@@ -431,8 +431,7 @@ object LunarCalendarFestivalUtils {
         lunarMonth = lunarNumber[iMonth - 1]
         if ("一" == lunarMonth) {
             lunarMonth = "正"
-        }
-        if ("十二" == lunarMonth) {
+        } else if ("十二" == lunarMonth) {
             lunarMonth = "腊"
         }
         if (leap) {
