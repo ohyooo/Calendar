@@ -103,9 +103,8 @@ fun Clock(onClick: () -> Unit) {
 
         LaunchedEffect(this) {
             while (true) {
-                val date = System.currentTimeMillis()
-                time = hourMinuteSecond(date)
-                dat = yearMonthDay(date) + "，星期" + dayOfWeek(date)
+                time = hourMinuteSecondNow()
+                dat = yearMonthDayWithLunarNow()
                 delay(1000)
             }
         }

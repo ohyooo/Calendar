@@ -2,24 +2,33 @@ package com.ohyooo.calendar.util
 
 import androidx.annotation.IntRange
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.util.*
 
+private val monthYearFromDateFormatter = SimpleDateFormat("yyyy年MM月", Locale.CHINA)
+
 fun monthYearFromDate(date: LocalDateTime): String {
-    val formatter = SimpleDateFormat("yyyy年MMMM", Locale.getDefault())
-    return formatter.format(date.toInstant(ZoneOffset.ofHours(8)).toEpochMilli())
+    return monthYearFromDateFormatter.format(date.toInstant(ZoneOffset.ofHours(8)).toEpochMilli())
 }
 
-fun hourMinuteSecond(date: Long): String {
-    val formatter = SimpleDateFormat("hh:mm:ss", Locale.getDefault())
-    return formatter.format(date)
+private val hourMinuteSecondNowFormatter = SimpleDateFormat("hh:mm:ss", Locale.CHINA)
+
+fun hourMinuteSecondNow(): String {
+    return hourMinuteSecondNowFormatter.format(System.currentTimeMillis())
 }
 
-fun yearMonthDay(date: Long): String {
-    val formatter = SimpleDateFormat("yyyy年MMMMDD日", Locale.getDefault())
-    return formatter.format(date)
+private val yearMonthDayNowFormatter = SimpleDateFormat("yyyy年MM月DD日", Locale.CHINA)
+
+fun yearMonthDayWithLunarNow(): String {
+    return yearMonthDayNowFormatter.format(System.currentTimeMillis()) + "，星期" + dayOfWeek(LocalDate.now().dayOfWeek.value) + " " + yearMonthDayNowLunar()
+}
+
+fun yearMonthDayNowLunar(): String {
+    LunarCalendarFestivalUtils.initLunarCalendarInfo(LocalDate.now())
+    return LunarCalendarFestivalUtils.lunarMonth + LunarCalendarFestivalUtils.lunarDay
 }
 
 fun dayOfWeek(time: Long): String {
@@ -61,14 +70,6 @@ fun getDay(day: Int): String {
 fun getLunarDay(day: Int): String {
     val date = firstDay.plusDays(day.toLong() - 1).toLocalDate()
     // return "$day\n${date.year} ${date.monthValue} ${date.dayOfMonth}"
-
-    // festival.initLunarCalendarInfo("2021-06-25")
     LunarCalendarFestivalUtils.initLunarCalendarInfo(date)
-    // println("农历" + festival.lunarYear + "年" + festival.lunarMonth + "月" + festival.lunarDay + "日")
-    // println(festival.ganZhiYear + "【" + festival.animal + "】年")
-    // println(festival.lunarTerm)
-    // println(festival.solarFestival)
-    // println(festival.lunarFestival)
-
     return "${date.dayOfMonth}\n${LunarCalendarFestivalUtils.lunarTerm.ifBlank { LunarCalendarFestivalUtils.lunarDay }}"
 }
