@@ -2,8 +2,8 @@ package com.ohyooo.calendar.util
 
 import androidx.collection.SparseArrayCompat
 import androidx.collection.set
-import java.text.ParseException
-import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit.DAYS
 import java.util.*
 
 /**
@@ -16,7 +16,7 @@ object LunarCalendarFestivalUtils {
      * @return
      */
     //生肖年
-    var animal: String? = null
+    var animal = ""
         private set
 
     /**
@@ -24,7 +24,7 @@ object LunarCalendarFestivalUtils {
      * @return
      */
     //干支年
-    var ganZhiYear: String? = null
+    var ganZhiYear = ""
         private set
 
     /**
@@ -32,7 +32,7 @@ object LunarCalendarFestivalUtils {
      * @return
      */
     //阴历年
-    var lunarYear: String? = null
+    var lunarYear = ""
         private set
 
     /**
@@ -40,7 +40,7 @@ object LunarCalendarFestivalUtils {
      * @return
      */
     //阴历月
-    var lunarMonth: String? = null
+    var lunarMonth = ""
         private set
 
     /**
@@ -48,7 +48,7 @@ object LunarCalendarFestivalUtils {
      * @return
      */
     //阴历日
-    var lunarDay: String? = null
+    var lunarDay = ""
         private set
 
     /**
@@ -56,7 +56,7 @@ object LunarCalendarFestivalUtils {
      * @return
      */
     //阳历节日
-    var solarFestival: String? = null
+    var solarFestival = ""
         private set
 
     /**
@@ -64,7 +64,7 @@ object LunarCalendarFestivalUtils {
      * @return
      */
     //阴历节日
-    var lunarFestival: String? = null
+    var lunarFestival = ""
         private set
 
     /**
@@ -72,7 +72,7 @@ object LunarCalendarFestivalUtils {
      * @return
      */
     //节气
-    var lunarTerm: String? = null
+    var lunarTerm = ""
         private set
 
     private val lunarInfo = longArrayOf(
@@ -112,8 +112,8 @@ object LunarCalendarFestivalUtils {
     private const val D = 0.2422
 
     //特殊年份节气日期偏移
-    private val INCREASE_OFFSET_MAP = SparseArrayCompat<IntArray>() //+1偏移
-    private val DECREASE_OFFSET_MAP = SparseArrayCompat<IntArray>() //-1偏移
+    private val INCREASE_OFFSET_MAP = SparseArrayCompat<IntArray>() // +1 偏移
+    private val DECREASE_OFFSET_MAP = SparseArrayCompat<IntArray>() // -1 偏移
 
     //定义一个二维数组，第一维数组存储的是20世纪的节气C值，第二维数组存储的是21世纪的节气C值,0到23个，依次代表立春、雨水...大寒节气的C值
     private val CENTURY_ARRAY = arrayOf(doubleArrayOf(6.11, 20.84, 4.6295, 19.4599, 6.3826, 21.4155, 5.59, 20.888, 6.318, 21.86, 6.5, 22.2, 7.928, 23.65, 8.35, 23.95, 8.44, 23.822, 9.098, 24.218, 8.218, 23.08, 7.9, 22.6), doubleArrayOf(5.4055, 20.12, 3.87, 18.73, 5.63, 20.646, 4.81, 20.1, 5.52, 21.04, 5.678, 21.37, 7.108, 22.83, 7.5, 23.13, 7.646, 23.042, 8.318, 23.438, 7.438, 22.36, 7.18, 21.94))
@@ -131,10 +131,6 @@ object LunarCalendarFestivalUtils {
     //公立节日
     private val solarHoliday = arrayOf("0101 元旦", "0214 情人节", "0308 妇女节", "0312 植树节", "0315 消费者权益日", "0401 愚人节", "0422 地球日", "0423 读书日", "0501 劳动节", "0504 青年节", "0512 护士节", "0518 博物馆日", "0519 旅游日", "0601 儿童节",
         "0701 建党节", "0801 建军节", "0910 教师节", "1001 国庆节", "1024 联合国日", "1204 宪法日", "1224 平安夜", "1225 圣诞节")
-
-    //格式化日期
-    private val chineseDateFormat = SimpleDateFormat("yyyy年MM月dd日", Locale.CHINA)
-    private val solarDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
 
     // /**
     //  * 测试方法
@@ -345,8 +341,7 @@ object LunarCalendarFestivalUtils {
         val m = (11 * a + 4 - b) % 29
         val w = (n + q + 31 - m) % 7
         val answer = 25 - m - w
-        var easterDay = ""
-        easterDay = (if (answer > 0) "$year-4-$answer" else year.toString() + "-" + 3 + "-" + (31 + answer))
+        val easterDay = (if (answer > 0) "$year-4-$answer" else year.toString() + "-" + 3 + "-" + (31 + answer))
         val searchDay = "$year-$month-$day"
         return if (searchDay == easterDay) "复活节" else null
     }
@@ -356,27 +351,19 @@ object LunarCalendarFestivalUtils {
      * 输入日期的格式为(YYYY-MM-DD)
      * @param currentDate
      */
-    fun initLunarCalendarInfo(currentDate: String) {
-        val splitDate = currentDate.split("-").toTypedArray()
+    fun initLunarCalendarInfo(currentDate: LocalDate) {
         //设置生肖
-        val year = splitDate[0].toInt()
+        val year = currentDate.year
         animal = animals[(year - 4) % 12]
         //设置天干地支
         val num = year - 1900 + 36
         ganZhiYear = tGan[num % 10] + dZhi[num % 12]
         ///////////设置阴历/////////////////////////////////////////////////////////
         //基准日期
-        var baseDate: Date? = null
-        //当前日期
-        var nowaday: Date? = null
-        try {
-            baseDate = chineseDateFormat.parse("1900年1月31日")
-            nowaday = solarDateFormat.parse(currentDate)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        }
+        val baseDate = LocalDate.of(1900, 1, 31)
+
         // 获取当前日期与1900年1月31日相差的天数
-        var offset = ((nowaday!!.time - baseDate!!.time) / 86400000L).toInt()
+        var offset = DAYS.between(currentDate, baseDate).toInt()
 
         //用offset减去每农历年的天数，计算当天是农历第几天 iYear最终结果是农历的年份
         var daysOfYear = 0
@@ -391,7 +378,7 @@ object LunarCalendarFestivalUtils {
             iYear--
         }
         lunarYear = getLunarYearString(iYear.toString() + "")
-        val leapMonth = leapMonth(iYear) // 闰哪个月,1-12
+        val leapMonth = leapMonth(iYear) // 闰哪个月, 1-12
         var leap = false
 
         // 用当年的天数offset,逐个减去每月（农历）的天数，求出当天是本月的第几天
@@ -440,8 +427,8 @@ object LunarCalendarFestivalUtils {
         lunarDay = getLunarDayString(iDay)
 
         //设置节气
-        val month = splitDate[1].toInt()
-        val day = splitDate[2].toInt()
+        val month = currentDate.monthValue
+        val day = currentDate.dayOfMonth
         lunarTerm = when (day) {
             sTerm(year, (month - 1) * 2) -> solarTerms[(month - 1) * 2]
             sTerm(year, (month - 1) * 2 + 1) -> solarTerms[(month - 1) * 2 + 1]
@@ -449,15 +436,15 @@ object LunarCalendarFestivalUtils {
         }
 
         //设置阳历节日
-        var solarFestival: String? = ""
+        var solarFestival = ""
         for (s in solarHoliday) {
             // 返回公历节假日名称
             val sd = s.split(" ").toTypedArray()[0] // 节假日的日期
             val sdv = s.split(" ").toTypedArray()[1] // 节假日的名称
-            val smonth_v = splitDate[1]
-            val sday_v = splitDate[2]
+            val smonth_v = month
+            val sday_v = day
             val smd = smonth_v + sday_v
-            if (sd.trim() == smd.trim()) {
+            if (sd.trim() == "$smd") {
                 solarFestival = sdv
                 break
             }
@@ -477,10 +464,11 @@ object LunarCalendarFestivalUtils {
         if (thanksgiving != null) {
             solarFestival = thanksgiving
         }
+
         this.solarFestival = solarFestival
 
         //设置阴历节日
-        var lunarFestival: String? = ""
+        var lunarFestival = ""
         for (s in lunarHoliday) {
             //阴历闰月节日
             if (leap) {
@@ -505,7 +493,7 @@ object LunarCalendarFestivalUtils {
                     break
                 }
             }
-            if (ld.trim { it <= ' ' } == lmd.trim { it <= ' ' }) {
+            if (ld.trim() == lmd.trim()) {
                 lunarFestival = ldv
                 break
             }
