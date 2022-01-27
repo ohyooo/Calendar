@@ -8,7 +8,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyGridState
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -18,8 +26,15 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -137,7 +152,8 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>, state: LazyGridStat
     }
 
     val coroutineScope = rememberCoroutineScope()
-    var job: Job? = null
+
+    var job by remember { mutableStateOf<Job?>(null) }
 
     var firstItem = state.firstVisibleItemIndex
 
@@ -147,6 +163,8 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>, state: LazyGridStat
 
         job?.cancel()
         job = coroutineScope.launch {
+            delay(AnimationConstants.DefaultDurationMillis.toLong())
+            if (!this.isActive) return@launch
             currentMonthRange = getHighlightRange(state.firstVisibleItemIndex..state.firstVisibleItemIndex + state.layoutInfo.visibleItemsInfo.size)
             if (!this.isActive) return@launch
             currentMonth.value = getMonthDay(currentMonthRange.first)
