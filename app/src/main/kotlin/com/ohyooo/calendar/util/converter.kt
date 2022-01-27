@@ -14,7 +14,7 @@ fun monthYearFromDate(date: LocalDateTime): String {
     return monthYearFromDateFormatter.format(date.toInstant(ZoneOffset.ofHours(8)).toEpochMilli())
 }
 
-private val hourMinuteSecondNowFormatter = SimpleDateFormat("hh:mm:ss", Locale.CHINA)
+private val hourMinuteSecondNowFormatter = SimpleDateFormat("HH:mm:ss", Locale.CHINA)
 
 fun hourMinuteSecondNow(): String {
     return hourMinuteSecondNowFormatter.format(System.currentTimeMillis())
