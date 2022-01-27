@@ -1,5 +1,7 @@
 package com.ohyooo.calendar.util
 
+import androidx.collection.SparseArrayCompat
+import androidx.collection.set
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -73,7 +75,7 @@ object LunarCalendarFestivalUtils {
     var lunarTerm: String? = null
         private set
 
-    val lunarInfo = longArrayOf(
+    private val lunarInfo = longArrayOf(
         0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,
         0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977,
         0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970,
@@ -110,8 +112,8 @@ object LunarCalendarFestivalUtils {
     private const val D = 0.2422
 
     //特殊年份节气日期偏移
-    private val INCREASE_OFFSETMAP: MutableMap<Int, Array<Int>> = HashMap() //+1偏移
-    private val DECREASE_OFFSETMAP: MutableMap<Int, Array<Int>> = HashMap() //-1偏移
+    private val INCREASE_OFFSET_MAP = SparseArrayCompat<IntArray>() //+1偏移
+    private val DECREASE_OFFSET_MAP = SparseArrayCompat<IntArray>() //-1偏移
 
     //定义一个二维数组，第一维数组存储的是20世纪的节气C值，第二维数组存储的是21世纪的节气C值,0到23个，依次代表立春、雨水...大寒节气的C值
     private val CENTURY_ARRAY = arrayOf(doubleArrayOf(6.11, 20.84, 4.6295, 19.4599, 6.3826, 21.4155, 5.59, 20.888, 6.318, 21.86, 6.5, 22.2, 7.928, 23.65, 8.35, 23.95, 8.44, 23.822, 9.098, 24.218, 8.218, 23.08, 7.9, 22.6), doubleArrayOf(5.4055, 20.12, 3.87, 18.73, 5.63, 20.646, 4.81, 20.1, 5.52, 21.04, 5.678, 21.37, 7.108, 22.83, 7.5, 23.13, 7.646, 23.042, 8.318, 23.438, 7.438, 22.36, 7.18, 21.94))
@@ -150,24 +152,23 @@ object LunarCalendarFestivalUtils {
     // }
 
     init {
-        INCREASE_OFFSETMAP[0] = arrayOf(1982) //小寒
-        DECREASE_OFFSETMAP[0] = arrayOf(2019) //小寒
-        INCREASE_OFFSETMAP[1] = arrayOf(2082) //大寒
-        DECREASE_OFFSETMAP[3] = arrayOf(2026) //雨水
-        INCREASE_OFFSETMAP[5] = arrayOf(2084) //春分
-        INCREASE_OFFSETMAP[9] = arrayOf(2008) //小满
-        INCREASE_OFFSETMAP[10] = arrayOf(1902) //芒种
-        INCREASE_OFFSETMAP[11] = arrayOf(1928) //夏至
-        INCREASE_OFFSETMAP[12] = arrayOf(1925, 2016) //小暑
-        INCREASE_OFFSETMAP[13] = arrayOf(1922) //大暑
-        INCREASE_OFFSETMAP[14] = arrayOf(2002) //立秋
-        INCREASE_OFFSETMAP[16] = arrayOf(1927) //白露
-        INCREASE_OFFSETMAP[17] = arrayOf(1942) //秋分
-        INCREASE_OFFSETMAP[19] = arrayOf(2089) //霜降
-        INCREASE_OFFSETMAP[20] = arrayOf(2089) //立冬
-        INCREASE_OFFSETMAP[21] = arrayOf(1978) //小雪
-        INCREASE_OFFSETMAP[22] = arrayOf(1954) //大雪
-        DECREASE_OFFSETMAP[23] = arrayOf(1918, 2021) //冬至
+        DECREASE_OFFSET_MAP[0] = intArrayOf(2019) //小寒
+        INCREASE_OFFSET_MAP[1] = intArrayOf(2082) //大寒
+        DECREASE_OFFSET_MAP[3] = intArrayOf(2026) //雨水
+        INCREASE_OFFSET_MAP[5] = intArrayOf(2084) //春分
+        INCREASE_OFFSET_MAP[9] = intArrayOf(2008) //小满
+        INCREASE_OFFSET_MAP[10] = intArrayOf(1902) //芒种
+        INCREASE_OFFSET_MAP[11] = intArrayOf(1928) //夏至
+        INCREASE_OFFSET_MAP[12] = intArrayOf(1925, 2016) //小暑
+        INCREASE_OFFSET_MAP[13] = intArrayOf(1922) //大暑
+        INCREASE_OFFSET_MAP[14] = intArrayOf(2002) //立秋
+        INCREASE_OFFSET_MAP[16] = intArrayOf(1927) //白露
+        INCREASE_OFFSET_MAP[17] = intArrayOf(1942) //秋分
+        INCREASE_OFFSET_MAP[19] = intArrayOf(2089) //霜降
+        INCREASE_OFFSET_MAP[20] = intArrayOf(2089) //立冬
+        INCREASE_OFFSET_MAP[21] = intArrayOf(1978) //小雪
+        INCREASE_OFFSET_MAP[22] = intArrayOf(1954) //大雪
+        DECREASE_OFFSET_MAP[23] = intArrayOf(1918, 2021) //冬至
     }
 
     /**
@@ -189,11 +190,9 @@ object LunarCalendarFestivalUtils {
     /**
      * 返回农历y年闰月的天数
      */
-    private fun leapDays(y: Int): Int {
-        return if (leapMonth(y) != 0) {
-            if (lunarInfo[y - 1900] and 0x10000 != 0L) 30 else 29
-        } else 0
-    }
+    private fun leapDays(y: Int) = if (leapMonth(y) != 0) {
+        if (lunarInfo[y - 1900] and 0x10000 != 0L) 30 else 29
+    } else 0
 
     /**
      * 判断y年的农历中那个月是闰月,不是闰月返回0
@@ -240,8 +239,8 @@ object LunarCalendarFestivalUtils {
      */
     private fun specialYearOffset(year: Int, n: Int): Int {
         var offset = 0
-        offset += getOffset(DECREASE_OFFSETMAP, year, n, -1)
-        offset += getOffset(INCREASE_OFFSETMAP, year, n, 1)
+        offset += getOffset(DECREASE_OFFSET_MAP, year, n, -1)
+        offset += getOffset(INCREASE_OFFSET_MAP, year, n, 1)
         return offset
     }
 
@@ -253,7 +252,7 @@ object LunarCalendarFestivalUtils {
      * @param offset
      * @return
      */
-    private fun getOffset(map: Map<Int, Array<Int>>, year: Int, n: Int, offset: Int): Int {
+    private fun getOffset(map: SparseArrayCompat<IntArray>, year: Int, n: Int, offset: Int): Int {
         var off = 0
         val years = map[n]
         if (null != years) {
