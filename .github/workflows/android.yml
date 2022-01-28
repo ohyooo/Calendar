@@ -49,7 +49,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: "app/build/outputs/apk/release/app-release.apk"
-          asset_name: "QRScan_ohyooo_${{ steps.time.outputs.time }}.apk"
+          asset_name: "Calendar_ohyooo_${{ steps.time.outputs.time }}.apk"
           asset_content_type: application/zip
 
       - name: Remove old Releases
