@@ -12,56 +12,56 @@ class LunarDate {
      * @return
      */
     //生肖年
-    var animal = ""
+    var animal: String? = null
 
     /**
      * 获取查询日期年份的天干地支
      * @return
      */
     //干支年
-    var ganZhiYear = ""
+    var ganZhiYear: String? = null
 
     /**
      * 获取查询日期的农历年份
      * @return
      */
     //阴历年
-    var lunarYear = ""
+    var lunarYear: String? = null
 
     /**
      * 获取查询日期的农历月份
      * @return
      */
     //阴历月
-    var lunarMonth = ""
+    var lunarMonth: String? = null
 
     /**
      * 获取查询日期的农历日
      * @return
      */
     //阴历日
-    var lunarDay = ""
+    var lunarDay: String? = null
 
     /**
      * 获取查询日期的公历节日（不是节日返回空）
      * @return
      */
     //阳历节日
-    var solarFestival = ""
+    var solarFestival: String? = null
 
     /**
      * 获取查询日期的农历节日（不是节日返回空）
      * @return
      */
     //阴历节日
-    var lunarFestival = ""
+    var lunarFestival: String? = null
 
     /**
      * 获取查询日期的节气数据（不是节气返回空）
      * @return
      */
     //节气
-    var lunarTerm = ""
+    var lunarTerm: String? = null
 }
 
 /**
@@ -351,10 +351,11 @@ object LunarCalendarFestivalUtils {
     fun initLunarCalendarInfo(currentDate: LocalDate, ld: LunarDate) {
         //设置生肖
         val year = currentDate.year
-        ld.animal = animals[(year - 4) % 12]
+        if (ld.animal != null) ld.animal = animals[(year - 4) % 12]
         //设置天干地支
         val num = year - 1900 + 36
-        ld.ganZhiYear = tGan[num % 10] + dZhi[num % 12]
+        if (ld.ganZhiYear != null) ld.ganZhiYear = tGan[num % 10] + dZhi[num % 12]
+
         ///////////设置阴历/////////////////////////////////////////////////////////
 
         // 获取当前日期与1900年1月31日相差的天数
@@ -372,7 +373,8 @@ object LunarCalendarFestivalUtils {
             offset += daysOfYear
             iYear--
         }
-        ld.lunarYear = getLunarYearString(iYear.toString() + "")
+        if (ld.lunarYear != null) ld.lunarYear = getLunarYearString(iYear.toString() + "")
+
         val leapMonth = leapMonth(iYear) // 闰哪个月, 1-12
         var leap = false
 
@@ -407,85 +409,98 @@ object LunarCalendarFestivalUtils {
             --iMonth
         }
         // 设置对应的阴历月份
-        ld.lunarMonth = when {
-            leap -> "闰${lunarNumber[iMonth - 1]}"
-            iMonth == 1 -> "正"
-            iMonth == 12 -> "腊"
-            else -> lunarNumber[iMonth - 1]
+        if (ld.lunarMonth != null) {
+            ld.lunarMonth = when {
+                leap -> "闰${lunarNumber[iMonth - 1]}"
+                iMonth == 1 -> "正"
+                iMonth == 12 -> "腊"
+                else -> lunarNumber[iMonth - 1]
+            }
         }
+
 
         //设置阴历日
         val iDay = offset + 1
-        ld.lunarDay = getLunarDayString(iDay)
+        if (ld.lunarDay != null) ld.lunarDay = getLunarDayString(iDay)
 
         //设置节气
-        val month = currentDate.monthValue
-        val day = currentDate.dayOfMonth
-        ld.lunarTerm = when (day) {
-            sTerm(year, (month - 1) * 2) -> solarTerms[(month - 1) * 2]
-            sTerm(year, (month - 1) * 2 + 1) -> solarTerms[(month - 1) * 2 + 1]
-            else -> ""
+        if (ld.lunarTerm != null) {
+            val month = currentDate.monthValue
+            val day = currentDate.dayOfMonth
+            ld.lunarTerm = when (day) {
+                sTerm(year, (month - 1) * 2) -> solarTerms[(month - 1) * 2]
+                sTerm(year, (month - 1) * 2 + 1) -> solarTerms[(month - 1) * 2 + 1]
+                else -> ""
+            }
         }
 
         //设置阳历节日
-        var solarFestival = ""
-        for (s in solarHoliday) {
-            // 返回公历节假日名称
-            val sd = s.split(" ").toTypedArray()[0] // 节假日的日期
-            val sdv = s.split(" ").toTypedArray()[1] // 节假日的名称
-            val smonth_v = month
-            val sday_v = day
-            val smd = smonth_v + sday_v
-            if (sd.trim() == "$smd") {
-                solarFestival = sdv
-                break
-            }
-        }
-        //判断节日是否是父亲节或母亲节
-        val motherOrFatherDay = getMotherOrFatherDay(year, month, day)
-        if (motherOrFatherDay != null) {
-            solarFestival = motherOrFatherDay
-        }
-        //判断节日是否是复活节
-        val easterDay = getEasterDay(year, month, day)
-        if (easterDay != null) {
-            solarFestival = easterDay
-        }
-        //判断节日是否是感恩节
-        val thanksgiving = thanksgiving(year, month, day)
-        if (thanksgiving != null) {
-            solarFestival = thanksgiving
-        }
+        if (ld.solarFestival != null) {
+            val month = currentDate.monthValue
+            val day = currentDate.dayOfMonth
 
-        ld.solarFestival = solarFestival
+            var solarFestival = ""
 
-        //设置阴历节日
-        var lunarFestival = ""
-        for (s in lunarHoliday) {
-            //阴历闰月节日
-            if (leap) {
-                break
-            }
-            // 返回农历节假日名称
-            val ld = s.split(" ").toTypedArray()[0] // 节假日的日期
-            val ldv = s.split(" ").toTypedArray()[1] // 节假日的名称
-            val lmonth_v = if (iMonth < 10) "0$iMonth" else iMonth.toString() + ""
-            val lday_v = if (iDay < 10) "0$iDay" else iDay.toString() + ""
-            val lmd = lmonth_v + lday_v
-            if ("12" == lmonth_v) { // 除夕夜需要特殊处理
-                if (daysOfMonth == 29 && iDay == 29 || daysOfMonth == 30 && iDay == 30) {
-                    lunarFestival = "除夕"
+            for (s in solarHoliday) {
+                // 返回公历节假日名称
+                val sd = s.split(" ").toTypedArray()[0] // 节假日的日期
+                val sdv = s.split(" ").toTypedArray()[1] // 节假日的名称
+                val smonth_v = month
+                val sday_v = day
+                val smd = smonth_v + sday_v
+                if (sd.trim() == "$smd") {
+                    solarFestival = sdv
                     break
                 }
             }
-            if (ld.trim() == lmd.trim()) {
-                lunarFestival = ldv
-                break
+            //判断节日是否是父亲节或母亲节
+            val motherOrFatherDay = getMotherOrFatherDay(year, month, day)
+            if (motherOrFatherDay != null) {
+                solarFestival = motherOrFatherDay
             }
+            //判断节日是否是复活节
+            val easterDay = getEasterDay(year, month, day)
+            if (easterDay != null) {
+                solarFestival = easterDay
+            }
+            //判断节日是否是感恩节
+            val thanksgiving = thanksgiving(year, month, day)
+            if (thanksgiving != null) {
+                solarFestival = thanksgiving
+            }
+
+            ld.solarFestival = solarFestival
         }
-        if ("清明" == ld.lunarTerm) {
-            lunarFestival = "清明节"
+
+        //设置阴历节日
+        if (ld.lunarFestival != null) {
+            var lunarFestival = ""
+            for (s in lunarHoliday) {
+                //阴历闰月节日
+                if (leap) {
+                    break
+                }
+                // 返回农历节假日名称
+                val ldk = s.split(" ").toTypedArray()[0] // 节假日的日期
+                val ldv = s.split(" ").toTypedArray()[1] // 节假日的名称
+                val lmonthV = if (iMonth < 10) "0$iMonth" else iMonth.toString() + ""
+                val ldayV = if (iDay < 10) "0$iDay" else iDay.toString() + ""
+                val lmd = lmonthV + ldayV
+                if ("12" == lmonthV) { // 除夕夜需要特殊处理
+                    if (daysOfMonth == 29 && iDay == 29 || daysOfMonth == 30 && iDay == 30) {
+                        lunarFestival = "除夕"
+                        break
+                    }
+                }
+                if (ldk.trim() == lmd.trim()) {
+                    lunarFestival = ldv
+                    break
+                }
+            }
+            if ("清明" == ld.lunarTerm) {
+                lunarFestival = "清明节"
+            }
+            ld.lunarFestival = lunarFestival
         }
-        ld.lunarFestival = lunarFestival
     }
 }

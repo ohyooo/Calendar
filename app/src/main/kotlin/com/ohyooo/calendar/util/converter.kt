@@ -27,8 +27,13 @@ fun yearMonthDayWithLunarNow(): String {
 }
 
 fun yearMonthDayNowLunar(): String {
-    LunarCalendarFestivalUtils.initLunarCalendarInfo(LocalDate.now())
-    return LunarCalendarFestivalUtils.lunarMonth + LunarCalendarFestivalUtils.lunarDay
+    val ld = LunarDate().apply {
+        lunarMonth = ""
+        lunarDay = ""
+        lunarFestival = ""
+    }
+    LunarCalendarFestivalUtils.initLunarCalendarInfo(LocalDate.now(), ld)
+    return ld.lunarMonth + ld.lunarDay
 }
 
 fun dayOfWeek(time: Long): String {
@@ -69,7 +74,14 @@ fun getDay(day: Int): String {
 
 fun getLunarDay(day: Int): String {
     val date = firstDay.plusDays(day.toLong() - 1).toLocalDate()
-    // return "$day\n${date.year} ${date.monthValue} ${date.dayOfMonth}"
-    LunarCalendarFestivalUtils.initLunarCalendarInfo(date)
-    return "${date.dayOfMonth}\n${LunarCalendarFestivalUtils.lunarTerm.ifBlank { LunarCalendarFestivalUtils.lunarDay }}"
+
+    val ld = LunarDate().apply {
+        lunarDay = ""
+        lunarFestival = ""
+        lunarTerm = ""
+    }
+
+    LunarCalendarFestivalUtils.initLunarCalendarInfo(date, ld)
+
+    return "${date.dayOfMonth}\n${ld.lunarFestival.orEmpty().ifBlank { ld.lunarTerm.orEmpty().ifBlank { ld.lunarDay } }}"
 }
