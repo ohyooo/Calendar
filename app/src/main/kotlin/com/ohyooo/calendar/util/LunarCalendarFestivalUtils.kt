@@ -6,18 +6,13 @@ import java.time.LocalDate
 import java.time.temporal.ChronoUnit.DAYS
 import java.util.*
 
-/**
- * 获取输入公历日期的生肖、天干地支、农历年、农历月、农历日、公历节日、农历节日、24节气等数据
- * DATE 2020.08.13
- */
-object LunarCalendarFestivalUtils {
+class LunarDate {
     /**
      * 获取查询日期的年份生肖
      * @return
      */
     //生肖年
     var animal = ""
-        private set
 
     /**
      * 获取查询日期年份的天干地支
@@ -25,7 +20,6 @@ object LunarCalendarFestivalUtils {
      */
     //干支年
     var ganZhiYear = ""
-        private set
 
     /**
      * 获取查询日期的农历年份
@@ -33,7 +27,6 @@ object LunarCalendarFestivalUtils {
      */
     //阴历年
     var lunarYear = ""
-        private set
 
     /**
      * 获取查询日期的农历月份
@@ -41,7 +34,6 @@ object LunarCalendarFestivalUtils {
      */
     //阴历月
     var lunarMonth = ""
-        private set
 
     /**
      * 获取查询日期的农历日
@@ -49,7 +41,6 @@ object LunarCalendarFestivalUtils {
      */
     //阴历日
     var lunarDay = ""
-        private set
 
     /**
      * 获取查询日期的公历节日（不是节日返回空）
@@ -57,7 +48,6 @@ object LunarCalendarFestivalUtils {
      */
     //阳历节日
     var solarFestival = ""
-        private set
 
     /**
      * 获取查询日期的农历节日（不是节日返回空）
@@ -65,7 +55,6 @@ object LunarCalendarFestivalUtils {
      */
     //阴历节日
     var lunarFestival = ""
-        private set
 
     /**
      * 获取查询日期的节气数据（不是节气返回空）
@@ -73,7 +62,13 @@ object LunarCalendarFestivalUtils {
      */
     //节气
     var lunarTerm = ""
-        private set
+}
+
+/**
+ * 获取输入公历日期的生肖、天干地支、农历年、农历月、农历日、公历节日、农历节日、24节气等数据
+ * DATE 2020.08.13
+ */
+object LunarCalendarFestivalUtils {
 
     private val lunarInfo = longArrayOf(
         0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,
@@ -353,13 +348,13 @@ object LunarCalendarFestivalUtils {
      * 输入日期的格式为(YYYY-MM-DD)
      * @param currentDate
      */
-    fun initLunarCalendarInfo(currentDate: LocalDate) {
+    fun initLunarCalendarInfo(currentDate: LocalDate, ld: LunarDate) {
         //设置生肖
         val year = currentDate.year
-        animal = animals[(year - 4) % 12]
+        ld.animal = animals[(year - 4) % 12]
         //设置天干地支
         val num = year - 1900 + 36
-        ganZhiYear = tGan[num % 10] + dZhi[num % 12]
+        ld.ganZhiYear = tGan[num % 10] + dZhi[num % 12]
         ///////////设置阴历/////////////////////////////////////////////////////////
 
         // 获取当前日期与1900年1月31日相差的天数
@@ -377,7 +372,7 @@ object LunarCalendarFestivalUtils {
             offset += daysOfYear
             iYear--
         }
-        lunarYear = getLunarYearString(iYear.toString() + "")
+        ld.lunarYear = getLunarYearString(iYear.toString() + "")
         val leapMonth = leapMonth(iYear) // 闰哪个月, 1-12
         var leap = false
 
@@ -412,24 +407,21 @@ object LunarCalendarFestivalUtils {
             --iMonth
         }
         // 设置对应的阴历月份
-        lunarMonth = lunarNumber[iMonth - 1]
-        if ("一" == lunarMonth) {
-            lunarMonth = "正"
-        } else if ("十二" == lunarMonth) {
-            lunarMonth = "腊"
-        }
-        if (leap) {
-            lunarMonth = "闰$lunarMonth"
+        ld.lunarMonth = when {
+            leap -> "闰${lunarNumber[iMonth - 1]}"
+            iMonth == 1 -> "正"
+            iMonth == 12 -> "腊"
+            else -> lunarNumber[iMonth - 1]
         }
 
         //设置阴历日
         val iDay = offset + 1
-        lunarDay = getLunarDayString(iDay)
+        ld.lunarDay = getLunarDayString(iDay)
 
         //设置节气
         val month = currentDate.monthValue
         val day = currentDate.dayOfMonth
-        lunarTerm = when (day) {
+        ld.lunarTerm = when (day) {
             sTerm(year, (month - 1) * 2) -> solarTerms[(month - 1) * 2]
             sTerm(year, (month - 1) * 2 + 1) -> solarTerms[(month - 1) * 2 + 1]
             else -> ""
@@ -465,7 +457,7 @@ object LunarCalendarFestivalUtils {
             solarFestival = thanksgiving
         }
 
-        this.solarFestival = solarFestival
+        ld.solarFestival = solarFestival
 
         //设置阴历节日
         var lunarFestival = ""
@@ -491,9 +483,9 @@ object LunarCalendarFestivalUtils {
                 break
             }
         }
-        if ("清明" == lunarTerm) {
+        if ("清明" == ld.lunarTerm) {
             lunarFestival = "清明节"
         }
-        this.lunarFestival = lunarFestival
+        ld.lunarFestival = lunarFestival
     }
 }
