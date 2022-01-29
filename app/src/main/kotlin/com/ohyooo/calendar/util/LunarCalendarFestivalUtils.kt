@@ -129,8 +129,10 @@ object LunarCalendarFestivalUtils {
     private val lunarHoliday = arrayOf("0101 春节", "0115 元宵节", "0202 龙头节", "0505 端午节", "0707 七夕节", "0715 中元节", "0815 中秋节", "0909 重阳节", "1001 寒衣节", "1015 下元节", "1208 腊八节", "1223 小年")
 
     //公立节日
-    private val solarHoliday = arrayOf("0101 元旦", "0214 情人节", "0308 妇女节", "0312 植树节", "0315 消费者权益日", "0401 愚人节", "0422 地球日", "0423 读书日", "0501 劳动节", "0504 青年节", "0512 护士节", "0518 博物馆日", "0519 旅游日", "0601 儿童节",
-        "0701 建党节", "0801 建军节", "0910 教师节", "1001 国庆节", "1024 联合国日", "1204 宪法日", "1224 平安夜", "1225 圣诞节")
+    private val solarHoliday = arrayOf(
+        "0101 元旦", "0214 情人节", "0308 妇女节", "0312 植树节", "0315 消费者权益日", "0401 愚人节", "0422 地球日", "0423 读书日", "0501 劳动节", "0504 青年节", "0512 护士节", "0518 博物馆日", "0519 旅游日", "0601 儿童节",
+        "0701 建党节", "0801 建军节", "0910 教师节", "1001 国庆节", "1024 联合国日", "1204 宪法日", "1224 平安夜", "1225 圣诞节"
+    )
 
     // /**
     //  * 测试方法
@@ -475,16 +477,9 @@ object LunarCalendarFestivalUtils {
             // 返回农历节假日名称
             val ld = s.split(" ").toTypedArray()[0] // 节假日的日期
             val ldv = s.split(" ").toTypedArray()[1] // 节假日的名称
-            var lmonth_v = iMonth.toString() + ""
-            var lday_v = iDay.toString() + ""
-            var lmd = ""
-            if (iMonth < 10) {
-                lmonth_v = "0$iMonth"
-            }
-            if (iDay < 10) {
-                lday_v = "0$iDay"
-            }
-            lmd = lmonth_v + lday_v
+            val lmonth_v = if (iMonth < 10) "0$iMonth" else iMonth.toString() + ""
+            val lday_v = if (iDay < 10) "0$iDay" else iDay.toString() + ""
+            val lmd = lmonth_v + lday_v
             if ("12" == lmonth_v) { // 除夕夜需要特殊处理
                 if (daysOfMonth == 29 && iDay == 29 || daysOfMonth == 30 && iDay == 30) {
                     lunarFestival = "除夕"
