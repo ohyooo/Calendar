@@ -41,7 +41,7 @@ fun dayOfWeek(time: Long): String {
 }
 
 fun dayOfWeek(@IntRange(from = 0L, to = 6L) day: Int): String {
-    return when (day + 1) {
+    return when (day) {
         1 -> "一"
         2 -> "二"
         3 -> "三"
@@ -49,7 +49,7 @@ fun dayOfWeek(@IntRange(from = 0L, to = 6L) day: Int): String {
         5 -> "五"
         6 -> "六"
         7 -> "日"
-        else -> throw IndexOutOfBoundsException("")
+        else -> throw IndexOutOfBoundsException("day=$day")
     }
 }
 
