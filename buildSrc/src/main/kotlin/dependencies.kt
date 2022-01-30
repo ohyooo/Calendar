@@ -22,7 +22,7 @@ object Libs {
     }
 
     object Compose {
-        const val composeVersion = "1.2.0-alpha01"
+        const val composeVersion = "1.2.0-alpha02"
         const val animation = "androidx.compose.animation:animation:$composeVersion"
         const val compiler = "androidx.compose.compiler:compiler:$composeVersion"
         const val foundation = "androidx.compose.foundation:foundation:$composeVersion"
@@ -37,9 +37,9 @@ object Libs {
 
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.4.1"
-        const val coreKtx = "androidx.core:core-ktx:1.8.0-alpha02"
-        const val fragmentKtx = "androidx.fragment:fragment-ktx:1.4.0"
-        const val compose = "androidx.activity:activity-compose:1.4.0"
+        const val coreKtx = "androidx.core:core-ktx:1.8.0-alpha03"
+        const val fragmentKtx = "androidx.fragment:fragment-ktx:1.5.0-alpha01"
+        const val compose = "androidx.activity:activity-compose:1.5.0-alpha01"
     }
 
     val appImplements = arrayOf(
