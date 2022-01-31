@@ -120,9 +120,9 @@ fun CalendarTitle(date: LocalDateTime, onClick: (Boolean) -> Unit) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CalendarWeekDays() {
-    LazyVerticalGrid(cells = GridCells.Fixed(7), content = {
-        items(count = 7) {
-            Text(text = saturdayOfWeek(it), textAlign = TextAlign.Center, color = dayOfWeekColor)
+    Row(content = {
+        repeat(7) {
+            Text(text = saturdayOfWeek(it), textAlign = TextAlign.Center, color = dayOfWeekColor, modifier = Modifier.weight(1F))
         }
     })
 }
