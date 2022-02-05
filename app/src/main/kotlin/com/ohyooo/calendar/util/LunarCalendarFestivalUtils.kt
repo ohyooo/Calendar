@@ -415,7 +415,7 @@ object LunarCalendarFestivalUtils {
                 iMonth == 1 -> "正"
                 iMonth == 12 -> "腊"
                 else -> lunarNumber[iMonth - 1]
-            }
+            } + "月"
         }
 
 
