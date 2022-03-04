@@ -224,3 +224,4 @@ abstract class UpdateTask : DefaultTask() {
     }
 
 }
+
