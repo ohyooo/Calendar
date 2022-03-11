@@ -17,7 +17,7 @@ object Libs {
     }
 
     object Plugin {
-        const val AGP = "com.android.tools.build:gradle:7.3.0-alpha04"
+        const val AGP = "com.android.tools.build:gradle:7.3.0-alpha05"
         const val KGP = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 
