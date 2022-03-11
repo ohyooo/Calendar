@@ -22,7 +22,7 @@ object Libs {
     }
 
     object Compose {
-        const val composeVersion = "1.2.0-alpha04"
+        const val composeVersion = "1.2.0-alpha05"
         const val animation = "androidx.compose.animation:animation:$composeVersion"
         const val compiler = "androidx.compose.compiler:compiler:$composeVersion"
         const val foundation = "androidx.compose.foundation:foundation:$composeVersion"
