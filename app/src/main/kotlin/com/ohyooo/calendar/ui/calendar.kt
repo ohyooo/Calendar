@@ -1,7 +1,6 @@
 package com.ohyooo.calendar.ui
 
 import androidx.compose.animation.core.AnimationConstants
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -116,7 +115,6 @@ fun CalendarTitle(date: LocalDateTime, onClick: (Boolean) -> Unit) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CalendarWeekDays() {
     Row(content = {
@@ -126,7 +124,6 @@ fun CalendarWeekDays() {
     })
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CalendarMonth(currentMonth: MutableState<LocalDateTime>, state: LazyGridState, scrollState: StateClass, nowLocaleDate: LocalDateTime, days: Int) {
     var currentMonthRange by remember {
