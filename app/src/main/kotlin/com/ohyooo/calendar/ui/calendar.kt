@@ -9,9 +9,9 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyGridState
-import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -37,7 +37,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun CalendarMain() {
@@ -155,7 +154,7 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>, state: LazyGridStat
     }
 
     LazyVerticalGrid(
-        cells = GridCells.Fixed(7),
+        columns = GridCells.Fixed(7),
         state = state,
         modifier = Modifier.scrollable(
             orientation = Orientation.Vertical,
