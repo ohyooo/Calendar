@@ -6,6 +6,7 @@ plugins {
 }
 
 android {
+    namespace = "com.ohyooo.calendar"
     signingConfigs {
         getByName("debug") {
             storeFile = file("..\\signkey.jks")
