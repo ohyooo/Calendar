@@ -51,16 +51,15 @@ jobs:
           draft: false
           prerelease: false
      
+      - name: Generate release tag
+        id: tag
+        run: |
+          echo "::set-output name=release_tag::$(date +"%Y.%m.%d_%H-%M")"
       - name: Upload Release
-        id: upload-release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: "app/build/outputs/apk/release/app-release.apk"
-          asset_name: "Calendar_ohyooo_${{ steps.time.outputs.time }}.apk"
-          asset_content_type: application/zip
+          tag_name: ${{ steps.tag.outputs.release_tag }}
+          files: "app/build/outputs/apk/release/*.apk"
 
       - name: Remove old Releases
         uses: dev-drprasad/delete-older-releases@v0.2.0
