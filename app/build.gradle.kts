@@ -18,12 +18,12 @@ android {
             enableV4Signing = true
         }
     }
-    compileSdk = Ext.compileSdk
-    buildToolsVersion = Ext.buildToolsVersion
+    compileSdkPreview = "Tiramisu"
+    buildToolsVersion = "33.0.0-rc2"
     defaultConfig {
         applicationId = Ext.applicationId
         minSdk = Ext.minSdk
-        targetSdk = Ext.targetSdk
+        targetSdkPreview = "Tiramisu"
         versionCode = Ext.versionCode
         versionName = Ext.versionName
         signingConfig = signingConfigs.getByName("debug")
