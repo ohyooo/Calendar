@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
-    id("kotlin-parcelize")
 }
 
 android {
@@ -18,12 +17,12 @@ android {
             enableV4Signing = true
         }
     }
-    compileSdkPreview = "Tiramisu"
-    buildToolsVersion = "33.0.0-rc2"
+    compileSdk = Ext.compileSdk
+    buildToolsVersion = Ext.buildToolsVersion
     defaultConfig {
         applicationId = Ext.applicationId
         minSdk = Ext.minSdk
-        targetSdkPreview = "Tiramisu"
+        targetSdk = Ext.targetSdk
         versionCode = Ext.versionCode
         versionName = Ext.versionName
         signingConfig = signingConfigs.getByName("debug")

@@ -1,6 +1,6 @@
 object Ext {
     const val applicationId = "com.ohyooo.calendar"
-    const val minSdk = 28
+    const val minSdk = 21
     const val compileSdk = 32
     const val buildToolsVersion = "32.0.0"
     const val targetSdk = 32
@@ -9,20 +9,20 @@ object Ext {
 }
 
 object Libs {
-    const val kotlinVersion = "1.6.10"
+    const val kotlinVersion = "1.6.20"
 
     object Kotlin {
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
-        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0"
+        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1"
     }
 
     object Plugin {
-        const val AGP = "com.android.tools.build:gradle:7.3.0-alpha06"
+        const val AGP = "com.android.tools.build:gradle:7.1.3"
         const val KGP = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 
     object Compose {
-        const val composeVersion = "1.2.0-alpha06"
+        const val composeVersion = "1.2.0-alpha08"
         const val animation = "androidx.compose.animation:animation:$composeVersion"
         const val compiler = "androidx.compose.compiler:compiler:$composeVersion"
         const val foundation = "androidx.compose.foundation:foundation:$composeVersion"
@@ -36,10 +36,10 @@ object Libs {
     }
 
     object AndroidX {
-        const val appcompat = "androidx.appcompat:appcompat:1.6.0-alpha01"
-        const val coreKtx = "androidx.core:core-ktx:1.9.0-alpha02"
-        const val fragmentKtx = "androidx.fragment:fragment-ktx:1.5.0-alpha04"
-        const val compose = "androidx.activity:activity-compose:1.6.0-alpha01"
+        const val appcompat = "androidx.appcompat:appcompat:1.4.1"
+        const val coreKtx = "androidx.core:core-ktx:1.5.0"
+        const val fragmentKtx = "androidx.fragment:fragment-ktx:1.4.1"
+        const val compose = "androidx.activity:activity-compose:1.4.0"
     }
 
     val appImplements = arrayOf(
