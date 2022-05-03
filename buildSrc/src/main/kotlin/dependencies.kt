@@ -9,7 +9,7 @@ object Ext {
 }
 
 object Libs {
-    const val kotlinVersion = "1.6.20"
+    const val kotlinVersion = "1.6.21"
 
     object Kotlin {
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
@@ -36,10 +36,10 @@ object Libs {
     }
 
     object AndroidX {
-        const val appcompat = "androidx.appcompat:appcompat:1.4.1"
-        const val coreKtx = "androidx.core:core-ktx:1.5.0"
-        const val fragmentKtx = "androidx.fragment:fragment-ktx:1.4.1"
-        const val compose = "androidx.activity:activity-compose:1.4.0"
+        const val appcompat = "androidx.appcompat:appcompat:1.6.0-alpha03"
+        const val coreKtx = "androidx.core:core-ktx:1.9.0-alpha03"
+        const val fragmentKtx = "androidx.fragment:fragment-ktx:1.5.0-beta01"
+        const val compose = "androidx.activity:activity-compose:1.6.0-alpha03"
     }
 
     val appImplements = arrayOf(
