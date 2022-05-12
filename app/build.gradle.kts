@@ -48,9 +48,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
     buildFeatures {
         compose = true
 
@@ -67,12 +64,16 @@ android {
 
 }
 
+dependencies {
+    Libs.appImplements.forEach(::implementation)
+}
+
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
         jvmTarget = "17"
+        freeCompilerArgs = freeCompilerArgs + listOf(
+            "-Xbackend-threads=12",
+            "-opt-in=kotlin.RequiresOptIn"
+        )
     }
-}
-
-dependencies {
-    Libs.appImplements.forEach(::implementation)
 }
