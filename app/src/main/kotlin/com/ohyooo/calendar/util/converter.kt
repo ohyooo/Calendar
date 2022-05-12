@@ -20,7 +20,7 @@ fun hourMinuteSecondNow(): String {
     return hourMinuteSecondNowFormatter.format(System.currentTimeMillis())
 }
 
-private val yearMonthDayNowFormatter = SimpleDateFormat("yyyy年MM月DD日", Locale.CHINA)
+private val yearMonthDayNowFormatter = SimpleDateFormat("yyyy年MM月dd日", Locale.CHINA)
 
 fun yearMonthDayWithLunarNow(): String {
     return yearMonthDayNowFormatter.format(System.currentTimeMillis()) + "，星期" + dayOfWeek(LocalDate.now().dayOfWeek.value) + " " + yearMonthDayNowLunar()
