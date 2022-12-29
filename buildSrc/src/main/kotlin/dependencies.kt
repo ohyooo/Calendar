@@ -42,6 +42,15 @@ object Libs {
         const val compose = "androidx.activity:activity-compose:1.6.1"
     }
 
+    object Test {
+        const val junit = "androidx.test.ext:junit:1.1.3"
+        const val espresso = "androidx.test.espresso:espresso-core:3.5.0"
+        const val uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"
+        const val macro = "androidx.benchmark:benchmark-macro-junit4:1.2.0-alpha06"
+
+        val list = arrayOf(junit, espresso, uiautomator, macro)
+    }
+
     val appImplements = arrayOf(
         AndroidX.coreKtx,
         AndroidX.fragmentKtx,

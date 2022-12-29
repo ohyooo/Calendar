@@ -35,6 +35,21 @@ android {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "consumer-rules.pro")
         }
+        create("benchmark") {
+            initWith(getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += listOf("release")
+            isDebuggable = false
+
+            // https://developer.android.com/topic/performance/baselineprofiles/create-baselineprofile
+            // Benchmark builds should not be obfuscated.
+            postprocessing {
+                isRemoveUnusedCode = true
+                isRemoveUnusedResources = true
+                isObfuscate = false
+                isOptimizeCode = true
+            }
+        }
     }
     splits {
         abi {
