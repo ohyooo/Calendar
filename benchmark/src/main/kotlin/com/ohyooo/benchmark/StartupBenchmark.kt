@@ -15,7 +15,7 @@ class StartupBenchmark {
 
     @Test
     fun startup() = benchmarkRule.measureRepeated(
-        packageName = "com.ohyooo.qrscan",
+        packageName = "com.ohyooo.calendar",
         metrics = listOf(StartupTimingMetric()),
         iterations = 1,
         startupMode = StartupMode.COLD
