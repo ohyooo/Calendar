@@ -24,7 +24,7 @@ android {
         minSdk = Ext.minSdk
         targetSdk = Ext.targetSdk
         versionCode = Ext.versionCode
-        versionName = Ext.versionName
+        versionName = Ext.versionName + hashTag
         signingConfig = signingConfigs.getByName("debug")
     }
     buildTypes {
@@ -59,7 +59,7 @@ android {
         shaders = false
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Libs.Compose.composeVersion
+        kotlinCompilerExtensionVersion = Libs.Compose.compilerVersion
     }
 
 }
@@ -68,12 +68,18 @@ dependencies {
     Libs.appImplements.forEach(::implementation)
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs = freeCompilerArgs + listOf(
-            "-Xbackend-threads=12",
-            "-opt-in=kotlin.RequiresOptIn"
-        )
-    }
-}
+val hashTag: String
+    get() = ProcessBuilder(listOf("git", "rev-parse", "--short", "HEAD"))
+        .directory(rootDir)
+        .redirectOutput(ProcessBuilder.Redirect.PIPE)
+        .redirectError(ProcessBuilder.Redirect.PIPE)
+        .start()
+        .apply { waitFor(5, TimeUnit.SECONDS) }
+        .run {
+            val error = errorStream.bufferedReader().readText().trim()
+            if (error.isNotEmpty()) {
+                ""
+            } else {
+                "-" + inputStream.bufferedReader().readText().trim()
+            }
+        }

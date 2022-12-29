@@ -14,10 +14,23 @@ allprojects {
         google()
         mavenCentral()
     }
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "17"
+            freeCompilerArgs = freeCompilerArgs + listOf(
+                "-Xbackend-threads=12", "-Xcontext-receivers", "-jvm-target=17"
+            )
+        }
+    }
 }
 
 tasks.register<Delete>("clean") {
     delete(rootProject.buildDir)
+}
+
+tasks.withType<GroovyCompile>().configureEach {
+    options.isIncremental = true
+    options.incrementalAfterFailure.set(true)
 }
 
 tasks.register<UpdateTask>("update")
@@ -30,10 +43,10 @@ abstract class UpdateTask : DefaultTask() {
         private val versionRegex = "(?<=<version>)(.*\\n?)(?=</version>)".toRegex()
         private val numberDotRegex = "^(\\d+\\.)?(\\d+\\.)?(\\*|\\d+)\$".toRegex()
 
-        private const val checkStable = false
-        private const val autoModify = true
+        private const val checkStable = true
+        private const val autoModify = false
 
-        private val stableList = arrayOf(Libs.Plugin.KGP, Libs.Kotlin.stdlib)
+        private val stableList = arrayOf(Libs.Plugin.KGP, Libs.Plugin.AGP)
     }
 
     @TaskAction
@@ -222,6 +235,4 @@ abstract class UpdateTask : DefaultTask() {
             }
         }
     }
-
 }
-
