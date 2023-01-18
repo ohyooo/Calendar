@@ -44,6 +44,7 @@ object Libs {
         val fragmentKtx = "androidx.fragment:fragment-ktx:1.5.5".regLib()
         val compose = "androidx.activity:activity-compose:1.6.1".regLib()
         val desugar = "com.android.tools:desugar_jdk_libs:2.0.0".regUpdate()
+        val profileinstaller = "androidx.profileinstaller:profileinstaller:1.2.2".regLib()
     }
 
     object Test {
