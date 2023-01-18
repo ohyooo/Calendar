@@ -60,6 +60,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -80,6 +81,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring(Libs.AndroidX.desugar)
     Libs.implementList.forEach(::implementation)
     Libs.debugImplementList.forEach(::debugImplementation)
 }

@@ -42,6 +42,7 @@ object Libs {
         val coreKtx = "androidx.core:core-ktx:1.9.0".regLib()
         val fragmentKtx = "androidx.fragment:fragment-ktx:1.5.5".regLib()
         val compose = "androidx.activity:activity-compose:1.6.1".regLib()
+        val desugar = "com.android.tools:desugar_jdk_libs:2.0.0".regUpdate()
     }
 
     object Test {
