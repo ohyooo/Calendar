@@ -35,6 +35,7 @@ object Libs {
         val materialIconsExtended = "androidx.compose.material:material-icons-extended:$composeVersion".regLib()
         val runtime = "androidx.compose.runtime:runtime:$composeVersion".regLib()
         val tooling = "androidx.compose.ui:ui-tooling:$composeVersion".regDebug()
+        val preview = "androidx.compose.ui:ui-tooling-preview:$composeVersion".regLib()
         val ui = "androidx.compose.ui:ui:$composeVersion".regLib()
     }
 
