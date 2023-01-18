@@ -9,67 +9,67 @@ object Ext {
 }
 
 object Libs {
-    const val kotlinVersion = "1.7.21"
+    val updateList = arrayListOf<String>()
+    val implementList = arrayListOf<String>()
+    val debugImplementList = arrayListOf<String>()
 
-    object Kotlin {
-        const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
-        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
-    }
+    const val kotlinVersion = "1.8.0"
 
     object Plugin {
-        const val AGP = "com.android.tools.build:gradle:7.3.1"
-        const val KGP = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        val AGP = "com.android.tools.build:gradle:7.4.0".regUpdate()
+        val KGP = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion".regUpdate()
+    }
+
+    object Kotlin {
+        val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion".regLib()
+        val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4".regLib()
     }
 
     object Compose {
-        const val composeVersion = "1.4.0-alpha03"
-        const val compilerVersion = "1.4.0-alpha02"
-        const val animation = "androidx.compose.animation:animation:$composeVersion"
-        const val compiler = "androidx.compose.compiler:compiler:$compilerVersion"
-        const val foundation = "androidx.compose.foundation:foundation:$composeVersion"
-        const val layout = "androidx.compose.foundation:foundation-layout:$composeVersion"
-        const val livedata = "androidx.compose.runtime:runtime-livedata:$composeVersion"
-        const val material = "androidx.compose.material:material:$composeVersion"
-        const val materialIconsExtended = "androidx.compose.material:material-icons-extended:$composeVersion"
-        const val runtime = "androidx.compose.runtime:runtime:$composeVersion"
-        const val tooling = "androidx.compose.ui:ui-tooling:$composeVersion"
-        const val ui = "androidx.compose.ui:ui:$composeVersion"
+        const val composeVersion = "1.4.0-alpha04"
+        const val compilerVersion = "1.4.0"
+        val animation = "androidx.compose.animation:animation:$composeVersion".regLib()
+        val compiler = "androidx.compose.compiler:compiler:$compilerVersion".regLib()
+        val foundation = "androidx.compose.foundation:foundation:$composeVersion".regLib()
+        val material = "androidx.compose.material:material:$composeVersion".regLib()
+        val materialIconsExtended = "androidx.compose.material:material-icons-extended:$composeVersion".regLib()
+        val runtime = "androidx.compose.runtime:runtime:$composeVersion".regLib()
+        val tooling = "androidx.compose.ui:ui-tooling:$composeVersion".regDebug()
+        val ui = "androidx.compose.ui:ui:$composeVersion".regLib()
     }
 
     object AndroidX {
-        const val coreKtx = "androidx.core:core-ktx:1.9.0"
-        const val fragmentKtx = "androidx.fragment:fragment-ktx:1.5.5"
-        const val compose = "androidx.activity:activity-compose:1.6.1"
+        val coreKtx = "androidx.core:core-ktx:1.9.0".regLib()
+        val fragmentKtx = "androidx.fragment:fragment-ktx:1.5.5".regLib()
+        val compose = "androidx.activity:activity-compose:1.6.1".regLib()
     }
 
     object Test {
-        const val junit = "androidx.test.ext:junit:1.1.3"
-        const val espresso = "androidx.test.espresso:espresso-core:3.5.0"
-        const val uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0"
-        const val macro = "androidx.benchmark:benchmark-macro-junit4:1.2.0-alpha06"
+        val junit = "androidx.test.ext:junit:1.1.3".regUpdate()
+        val espresso = "androidx.test.espresso:espresso-core:3.5.1".regUpdate()
+        val uiautomator = "androidx.test.uiautomator:uiautomator:2.2.0".regUpdate()
+        val macro = "androidx.benchmark:benchmark-macro-junit4:1.2.0-alpha06".regUpdate()
 
         val list = arrayOf(junit, espresso, uiautomator, macro)
     }
 
-    val appImplements = arrayOf(
-        AndroidX.coreKtx,
-        AndroidX.fragmentKtx,
-        AndroidX.compose,
-        Compose.animation,
-        Compose.compiler,
-        Compose.foundation,
-        Compose.layout,
-        Compose.livedata,
-        Compose.material,
-        Compose.materialIconsExtended,
-        Compose.runtime,
-        Compose.tooling,
-        Compose.ui,
-        Kotlin.coroutines,
-        Kotlin.stdlib,
-    )
+    init {
+        Plugin
+        Kotlin
+        Compose
+        AndroidX
+        Test
+    }
 
-    val deps: List<String> = mutableSetOf<String>().apply {
-        addAll(appImplements)
-    }.toList()
+    private fun String.regLib() = this.also {
+        implementList.add(it)
+        updateList.add(it)
+    }
+
+    fun String.regDebug() = this.also {
+        debugImplementList.add(it)
+        updateList.add(it)
+    }
+
+    fun String.regUpdate() = this.also(updateList::add)
 }

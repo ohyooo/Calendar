@@ -52,10 +52,7 @@ android {
 }
 
 dependencies {
-    implementation(Libs.Test.junit)
-    implementation(Libs.Test.espresso)
-    implementation(Libs.Test.uiautomator)
-    implementation(Libs.Test.macro)
+    Libs.Test.list.forEach(::implementation)
 }
 
 androidComponents {

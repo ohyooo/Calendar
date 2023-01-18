@@ -80,7 +80,8 @@ android {
 }
 
 dependencies {
-    Libs.appImplements.forEach(::implementation)
+    Libs.implementList.forEach(::implementation)
+    Libs.debugImplementList.forEach(::debugImplementation)
 }
 
 val hashTag: String
