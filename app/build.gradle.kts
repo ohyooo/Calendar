@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -86,18 +88,13 @@ dependencies {
     Libs.debugImplementList.forEach(::debugImplementation)
 }
 
-val hashTag: String
-    get() = ProcessBuilder(listOf("git", "rev-parse", "--short", "HEAD"))
-        .directory(rootDir)
-        .redirectOutput(ProcessBuilder.Redirect.PIPE)
-        .redirectError(ProcessBuilder.Redirect.PIPE)
-        .start()
-        .apply { waitFor(5, TimeUnit.SECONDS) }
-        .run {
-            val error = errorStream.bufferedReader().readText().trim()
-            if (error.isNotEmpty()) {
-                ""
-            } else {
-                "-" + inputStream.bufferedReader().readText().trim()
-            }
-        }
+val hashTag
+    get() = try {
+        val r = providers.exec {
+            workingDir(rootDir)
+            commandLine("git", "rev-parse", "--short", "HEAD")
+        }.standardOutput?.asText?.get()?.trim()
+        if (!r.isNullOrBlank()) "-$r" else ""
+    } catch (e: Exception) {
+        ""
+    }
