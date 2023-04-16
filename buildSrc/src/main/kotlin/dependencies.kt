@@ -2,7 +2,7 @@ object Ext {
     const val applicationId = "com.ohyooo.calendar"
     const val minSdk = 21
     const val compileSdk = 33
-    const val buildToolsVersion = "33.0.1"
+    const val buildToolsVersion = "33.0.2"
     const val targetSdk = 33
     const val versionCode = 1
     const val versionName = "1.0"
@@ -13,21 +13,20 @@ object Libs {
     val implementList = arrayListOf<String>()
     val debugImplementList = arrayListOf<String>()
 
-    const val kotlinVersion = "1.8.0"
+    const val kotlinVersion = "1.8.20"
 
     object Plugin {
-        val AGP = "com.android.tools.build:gradle:7.4.0".regUpdate()
+        val AGP = "com.android.tools.build:gradle:8.0.0".regUpdate()
         val KGP = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion".regUpdate()
     }
 
     object Kotlin {
-        val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion".regLib()
         val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4".regLib()
     }
 
     object Compose {
-        const val composeVersion = "1.4.0-alpha04"
-        const val compilerVersion = "1.4.0"
+        const val composeVersion = "1.4.1"
+        const val compilerVersion = "1.4.5"
         val animation = "androidx.compose.animation:animation:$composeVersion".regLib()
         val compiler = "androidx.compose.compiler:compiler:$compilerVersion".regLib()
         val foundation = "androidx.compose.foundation:foundation:$composeVersion".regLib()
@@ -40,11 +39,11 @@ object Libs {
     }
 
     object AndroidX {
-        val coreKtx = "androidx.core:core-ktx:1.9.0".regLib()
-        val fragmentKtx = "androidx.fragment:fragment-ktx:1.5.5".regLib()
-        val compose = "androidx.activity:activity-compose:1.6.1".regLib()
-        val desugar = "com.android.tools:desugar_jdk_libs:2.0.0".regUpdate()
-        val profileinstaller = "androidx.profileinstaller:profileinstaller:1.2.2".regLib()
+        val coreKtx = "androidx.core:core-ktx:1.10.0".regLib()
+        val fragmentKtx = "androidx.fragment:fragment-ktx:1.5.6".regLib()
+        val compose = "androidx.activity:activity-compose:1.7.0".regLib()
+        val desugar = "com.android.tools:desugar_jdk_libs:2.0.3".regUpdate()
+        val profileinstaller = "androidx.profileinstaller:profileinstaller:1.3.0".regLib()
     }
 
     object Test {
