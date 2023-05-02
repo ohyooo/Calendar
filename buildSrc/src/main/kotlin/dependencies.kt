@@ -13,10 +13,10 @@ object Libs {
     val implementList = arrayListOf<String>()
     val debugImplementList = arrayListOf<String>()
 
-    const val kotlinVersion = "1.8.20"
+    const val kotlinVersion = "1.8.21"
 
     object Plugin {
-        val AGP = "com.android.tools.build:gradle:8.0.0".regUpdate()
+        val AGP = "com.android.tools.build:gradle:8.0.1".regUpdate()
         val KGP = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion".regUpdate()
     }
 
@@ -25,8 +25,8 @@ object Libs {
     }
 
     object Compose {
-        const val composeVersion = "1.4.1"
-        const val compilerVersion = "1.4.5"
+        const val composeVersion = "1.4.2"
+        const val compilerVersion = "1.4.6"
         val animation = "androidx.compose.animation:animation:$composeVersion".regLib()
         val compiler = "androidx.compose.compiler:compiler:$compilerVersion".regLib()
         val foundation = "androidx.compose.foundation:foundation:$composeVersion".regLib()
@@ -40,8 +40,8 @@ object Libs {
 
     object AndroidX {
         val coreKtx = "androidx.core:core-ktx:1.10.0".regLib()
-        val fragmentKtx = "androidx.fragment:fragment-ktx:1.5.6".regLib()
-        val compose = "androidx.activity:activity-compose:1.7.0".regLib()
+        val fragmentKtx = "androidx.fragment:fragment-ktx:1.5.7".regLib()
+        val compose = "androidx.activity:activity-compose:1.7.1".regLib()
         val desugar = "com.android.tools:desugar_jdk_libs:2.0.3".regUpdate()
         val profileinstaller = "androidx.profileinstaller:profileinstaller:1.3.0".regLib()
     }
