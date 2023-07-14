@@ -1,4 +1,4 @@
-package com.ohyooo.calendar.ui
+package com.ohyooo.common.compose
 
 import androidx.compose.animation.core.AnimationConstants
 import androidx.compose.foundation.background
@@ -7,7 +7,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -17,32 +25,43 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ohyooo.calendar.util.*
+import com.ohyooo.common.util.StateClass
+import com.ohyooo.common.util.currentLocaleDate
+import com.ohyooo.common.util.getHighlightRange
+import com.ohyooo.common.util.getLunarDay
+import com.ohyooo.common.util.getMonthDay
+import com.ohyooo.common.util.hourMinuteSecondNow
+import com.ohyooo.common.util.monthYearFromDate
+import com.ohyooo.common.util.prevDaySize
+import com.ohyooo.common.util.saturdayOfWeek
+import com.ohyooo.common.util.yearMonthDayWithLunarNow
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-@Preview
 @Composable
 fun CalendarMain() {
     val currentLocaleDate = currentLocaleDate
     val prevDaySize = prevDaySize
 
-    val currentMonth = remember { mutableStateOf(currentLocaleDate) }
+    var currentMonth by rememberSaveable { mutableStateOf(currentLocaleDate) }
 
     val state = rememberSaveable(saver = LazyGridState.Saver) {
         LazyGridState(prevDaySize.toInt() - currentLocaleDate.dayOfMonth + 2, 0)
@@ -63,7 +82,7 @@ fun CalendarMain() {
 
         Divider(color = Color.Gray)
 
-        CalendarTitle(currentMonth.value) { isUp ->
+        CalendarTitle(currentMonth) { isUp ->
             coroutineScope.launch {
                 state.animateScrollToItem(state.firstVisibleItemIndex + 7 * 6 * if (isUp) 1 else -1)
                 delay(AnimationConstants.DefaultDurationMillis.toLong())
@@ -73,15 +92,17 @@ fun CalendarMain() {
 
         CalendarWeekDays()
 
-        CalendarMonth(currentMonth, state, scrollState, currentLocaleDate, prevDaySize.toInt())
+        CalendarMonth(state, scrollState, currentLocaleDate, prevDaySize.toInt()) {
+            currentMonth = it
+        }
     }
 }
 
 @Composable
 fun Clock(onClick: () -> Unit) {
     Column(modifier = Modifier.padding(start = 12.dp, top = 16.dp, end = 12.dp, bottom = 16.dp)) {
-        var time by remember { mutableStateOf("") }
-        var dat by remember { mutableStateOf("") }
+        var time by rememberSaveable { mutableStateOf("") }
+        var dat by rememberSaveable { mutableStateOf("") }
 
         LaunchedEffect(this) {
             while (true) {
@@ -99,19 +120,22 @@ fun Clock(onClick: () -> Unit) {
 
 @Composable
 fun CalendarTitle(date: LocalDateTime, onClick: (Boolean) -> Unit) {
-    Row {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = monthYearFromDate(date),
             modifier = Modifier
-                .weight(1F)
+                .align(Alignment.CenterVertically)
                 .padding(start = 12.dp, top = 16.dp, end = 12.dp, bottom = 16.dp),
             color = monthTitleColor,
             fontSize = 16.sp
         )
-        val size = LocalConfiguration.current.screenWidthDp / 7
 
-        ScrollIcon(Icons.Outlined.ExpandMore, size.dp, "UP") { onClick(true) }
-        ScrollIcon(Icons.Outlined.ExpandLess, size.dp, "DOWN") { onClick(false) }
+        repeat(5) {
+            ScrollIcon(null, "space") { }
+        }
+
+        ScrollIcon(Icons.Outlined.ExpandMore, "UP") { onClick(true) }
+        ScrollIcon(Icons.Outlined.ExpandLess, "DOWN") { onClick(false) }
     }
 }
 
@@ -125,14 +149,14 @@ fun CalendarWeekDays() {
 }
 
 @Composable
-fun CalendarMonth(currentMonth: MutableState<LocalDateTime>, state: LazyGridState, scrollState: StateClass, nowLocaleDate: LocalDateTime, days: Int) {
+fun CalendarMonth(state: LazyGridState, scrollState: StateClass, nowLocaleDate: LocalDateTime, days: Int, onDateChange: (LocalDateTime) -> Unit) {
     var currentMonthRange by remember {
         mutableStateOf(state.firstVisibleItemIndex..days + nowLocaleDate.toLocalDate().lengthOfMonth() - nowLocaleDate.dayOfMonth + 1)
     }
 
     val coroutineScope = rememberCoroutineScope()
 
-    var job by remember { mutableStateOf<Job?>(null) }
+    var job by rememberSaveable { mutableStateOf<Job?>(null) }
 
     var firstItem = state.firstVisibleItemIndex
 
@@ -146,7 +170,7 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>, state: LazyGridStat
             if (!this.isActive) return@launch
             currentMonthRange = getHighlightRange(state.firstVisibleItemIndex..state.firstVisibleItemIndex + state.layoutInfo.visibleItemsInfo.size)
             if (!this.isActive) return@launch
-            currentMonth.value = getMonthDay(currentMonthRange.first)
+            onDateChange(getMonthDay(currentMonthRange.first))
         }
     }
 
@@ -201,17 +225,24 @@ fun CalendarMonth(currentMonth: MutableState<LocalDateTime>, state: LazyGridStat
 }
 
 @Composable
-fun ScrollIcon(imageVector: ImageVector, size: Dp, contentDescription: String, onClick: () -> Unit) {
+fun RowScope.ScrollIcon(imageVector: ImageVector?, contentDescription: String, onClick: () -> Unit) {
+    var modifier = Modifier
+        .wrapContentHeight()
+        .weight(1F)
+        .aspectRatio(1F)
+
+    if (imageVector != null) {
+        modifier = modifier.clickable(onClick = onClick)
+    }
     Box(
-        modifier = Modifier
-            .width(size)
-            .height(size)
-            .clickable(onClick = onClick),
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            imageVector = imageVector,
-            modifier = Modifier.size(32.dp), contentDescription = contentDescription, tint = monthTitleColor
-        )
+        imageVector?.let {
+            Icon(
+                imageVector = imageVector,
+                modifier = Modifier.size(32.dp), contentDescription = contentDescription, tint = monthTitleColor
+            )
+        }
     }
 }

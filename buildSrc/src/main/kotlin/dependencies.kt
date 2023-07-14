@@ -1,11 +1,10 @@
 object Ext {
     const val applicationId = "com.ohyooo.calendar"
     const val minSdk = 21
-    const val compileSdk = 33
-    const val buildToolsVersion = "33.0.2"
-    const val targetSdk = 33
-    const val versionCode = 1
-    const val versionName = "1.0"
+    const val compileSdk = 34
+    const val targetSdk = 34
+    const val versionCode = 22
+    const val versionName = "3.3"
 }
 
 object Libs {
@@ -13,11 +12,17 @@ object Libs {
     val implementList = arrayListOf<String>()
     val debugImplementList = arrayListOf<String>()
 
-    const val kotlinVersion = "1.8.22"
+    object Version {
+        const val agp = "8.0.2"
+        const val kotlin = "1.8.22"
+        const val compose = "1.4.1"
+    }
 
     object Plugin {
-        val AGP = "com.android.tools.build:gradle:8.0.2".regUpdate()
-        val KGP = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion".regUpdate()
+        val AGP = "com.android.tools.build:gradle:${Version.agp}".regUpdate()
+        val KGP = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Version.kotlin}".regUpdate()
+
+        val list = arrayOf(AGP, KGP)
     }
 
     object Kotlin {
@@ -27,23 +32,37 @@ object Libs {
     object Compose {
         const val composeVersion = "1.4.3"
         const val compilerVersion = "1.4.8"
-        val animation = "androidx.compose.animation:animation:$composeVersion".regLib()
         val compiler = "androidx.compose.compiler:compiler:$compilerVersion".regLib()
+        val animation = "androidx.compose.animation:animation:$composeVersion".regLib()
         val foundation = "androidx.compose.foundation:foundation:$composeVersion".regLib()
-        val material = "androidx.compose.material:material:$composeVersion".regLib()
+        val material = "androidx.compose.material3:material3:1.1.1".regLib()
         val materialIconsExtended = "androidx.compose.material:material-icons-extended:$composeVersion".regLib()
         val runtime = "androidx.compose.runtime:runtime:$composeVersion".regLib()
-        val tooling = "androidx.compose.ui:ui-tooling:$composeVersion".regDebug()
+        val tooling = "androidx.compose.ui:ui-tooling:$composeVersion".regUpdate().regDebug()
         val preview = "androidx.compose.ui:ui-tooling-preview:$composeVersion".regLib()
         val ui = "androidx.compose.ui:ui:$composeVersion".regLib()
+        val navigation_compose = "androidx.navigation:navigation-compose:2.6.0".regLib()
+        val navigation_runtime = "androidx.navigation:navigation-runtime-ktx:2.6.0".regLib()
     }
 
     object AndroidX {
         val coreKtx = "androidx.core:core-ktx:1.10.1".regLib()
         val fragmentKtx = "androidx.fragment:fragment-ktx:1.6.0".regLib()
         val compose = "androidx.activity:activity-compose:1.7.2".regLib()
-        val desugar = "com.android.tools:desugar_jdk_libs:2.1.3".regUpdate()
         val profileinstaller = "androidx.profileinstaller:profileinstaller:1.3.1".regLib()
+        val startup = "androidx.startup:startup-runtime:1.1.1".regLib()
+    }
+
+    object Google {
+        val accompanistVersion = "0.30.1"
+        val pager = "com.google.accompanist:accompanist-pager:$accompanistVersion".regLib()
+        val indicators = "com.google.accompanist:accompanist-pager-indicators:$accompanistVersion".regLib()
+    }
+
+    object Others {
+        val moko_generator = "dev.icerock.moko:resources-generator:0.23.0".regLib()
+        val moko_resources = "dev.icerock.moko:resources:0.23.0".regLib()
+        val moko_compose = "dev.icerock.moko:resources-compose:0.23.0".regLib()
     }
 
     init {
@@ -51,6 +70,8 @@ object Libs {
         Kotlin
         Compose
         AndroidX
+        Google
+        Others
     }
 
     private fun String.regLib() = this.also {

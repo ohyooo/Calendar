@@ -1,4 +1,4 @@
-package com.ohyooo.calendar.util
+package com.ohyooo.common.util
 
 import java.time.LocalDate
 import java.time.LocalDateTime

@@ -1,4 +1,4 @@
-package com.ohyooo.calendar.ui
+package com.ohyooo.common.compose
 
 import androidx.compose.ui.graphics.Color
 

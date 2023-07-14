@@ -1,36 +1,29 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath(Libs.Plugin.AGP)
-        classpath(Libs.Plugin.KGP)
-    }
-}
+group = "com.ohyooo"
+version = "1.0.0"
 
 allprojects {
     repositories {
         google()
         mavenCentral()
-    }
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "17"
-            freeCompilerArgs = freeCompilerArgs + listOf(
-                "-Xbackend-threads=12", "-Xcontext-receivers", "-jvm-target=17"
-            )
-        }
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
-tasks.register<Delete>("clean") {
-    delete(rootProject.buildDir)
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+    dependencies {
+        classpath(Libs.Others.moko_generator)
+    }
 }
 
-tasks.withType<GroovyCompile>().configureEach {
-    options.isIncremental = true
-    options.incrementalAfterFailure.set(true)
+plugins {
+    kotlin("multiplatform").version(Libs.Version.kotlin) apply false
+    kotlin("android").version(Libs.Version.kotlin) apply false
+    id("com.android.application").version(Libs.Version.agp) apply false
+    id("com.android.library").version(Libs.Version.agp) apply false
+    id("org.jetbrains.compose").version(Libs.Version.compose) apply false
 }
 
 tasks.register<UpdateTask>("update")
@@ -46,7 +39,7 @@ abstract class UpdateTask : DefaultTask() {
         private const val checkStable = true
         private const val autoModify = false
 
-        private val stableList = arrayOf(Libs.Plugin.KGP, Libs.Plugin.AGP)
+        private val stableList = arrayOf(Libs.Plugin.AGP, Libs.Plugin.KGP)
     }
 
     @TaskAction
@@ -235,4 +228,6 @@ abstract class UpdateTask : DefaultTask() {
             }
         }
     }
+
 }
+

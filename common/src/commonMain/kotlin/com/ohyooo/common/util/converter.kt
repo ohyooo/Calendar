@@ -1,12 +1,12 @@
-package com.ohyooo.calendar.util
+package com.ohyooo.common.util
 
-import androidx.annotation.IntRange
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 private val monthYearFromDateFormatter = SimpleDateFormat("yyyy年MM月", Locale.CHINA)
 
@@ -40,7 +40,7 @@ fun dayOfWeek(time: Long): String {
     return dayOfWeek(Date(time).toInstant().atZone(ZoneId.systemDefault()).dayOfWeek.value)
 }
 
-fun dayOfWeek(@IntRange(from = 0L, to = 6L) day: Int): String {
+fun dayOfWeek(day: Int): String {
     return when (day) {
         1 -> "一"
         2 -> "二"
@@ -53,7 +53,7 @@ fun dayOfWeek(@IntRange(from = 0L, to = 6L) day: Int): String {
     }
 }
 
-fun saturdayOfWeek(@IntRange(from = 0L, to = 6L) day: Int): String {
+fun saturdayOfWeek(day: Int): String {
     return when (day + 1) {
         1 -> "日"
         2 -> "一"

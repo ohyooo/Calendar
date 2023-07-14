@@ -73,53 +73,70 @@ while
     [ -h "$app_path" ]
 do
     ls=$( ls -ld "$app_path" )
-    link=${ls#*' -> '}
-    case $link in             #(
-      /*)   app_path=$link ;; #(
-      *)    app_path=$APP_HOME$link ;;
-    esac
+link = ${ls#
+*' -> '}
+case
+$link in
+#(
+/*)   app_path=$link ;; #(
+*)    app_path=$APP_HOME$link ;;
+esac
 done
 
 # This is normally unused
 # shellcheck disable=SC2034
 APP_BASE_NAME=${0##*/}
-APP_HOME=$( cd "${APP_HOME:-./}" && pwd -P ) || exit
+APP_HOME = $(cd
+"${APP_HOME:-./}" && pwd -P ) ||
+exit
 
 # Use the maximum available, or set MAX_FD != -1 to use that value.
-MAX_FD=maximum
+        MAX_FD = maximum
 
-warn () {
-    echo "$*"
-} >&2
+warn() {
+    echo
+    "$*"
+}
 
-die () {
+>&2
+
+die() {
     echo
-    echo "$*"
+            echo
+    "$*"
     echo
-    exit 1
-} >&2
+            exit
+    1
+}
+
+>&2
 
 # OS specific support (must be 'true' or 'false').
-cygwin=false
-msys=false
-darwin=false
-nonstop=false
+cygwin = false
+msys = false
+darwin = false
+nonstop = false
 case "$( uname )" in                #(
-  CYGWIN* )         cygwin=true  ;; #(
-  Darwin* )         darwin=true  ;; #(
-  MSYS* | MINGW* )  msys=true    ;; #(
-  NONSTOP* )        nonstop=true ;;
+CYGWIN* )
+cygwin = true;; #(
+Darwin* )
+darwin = true;; #(
+MSYS* | MINGW* )
+msys = true;; #(
+NONSTOP* )
+nonstop = true;;
 esac
 
-CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
+        CLASSPATH = $APP_HOME / gradle / wrapper / gradle - wrapper.jar
 
 
 # Determine the Java command to use to start the JVM.
-if [ -n "$JAVA_HOME" ] ; then
-    if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
-        # IBM's JDK on AIX uses strange locations for the executables
-        JAVACMD=$JAVA_HOME/jre/sh/java
-    else
+if [ -n "$JAVA_HOME" ]; then
+if [ -x "$JAVA_HOME/jre/sh/java" ];
+then
+# IBM's JDK on AIX uses strange locations for the executables
+        JAVACMD = $JAVA_HOME / jre / sh / java
+else
 JAVACMD = $JAVA_HOME / bin / java
 fi
 if [ ! -x "$JAVACMD" ];
@@ -198,22 +215,37 @@ class name
 #   * -
 D...appname
 settings
-#   * --module-path (only if needed)
-#   * DEFAULT_JVM_OPTS, JAVA_OPTS, and GRADLE_OPTS environment variables.
+#   * --module-
+path (only
+if needed)
+#   * DEFAULT_JVM_OPTS, JAVA_OPTS, and
+GRADLE_OPTS environment
+variables.
 
 # For Cygwin or MSYS, switch paths to Windows format before running java
-if "$cygwin" || "$msys" ; then
-    APP_HOME=$( cygpath --path --mixed "$APP_HOME" )
-    CLASSPATH=$( cygpath --path --mixed "$CLASSPATH" )
+if "$cygwin" || "$msys";
+then
+        APP_HOME = $(cygpath--
+path --mixed "$APP_HOME" )
+CLASSPATH = $(cygpath--
+path --mixed "$CLASSPATH" )
 
-    JAVACMD=$( cygpath --unix "$JAVACMD" )
+JAVACMD = $(cygpath--
+unix "$JAVACMD" )
 
-    # Now convert the arguments - kludge to limit ourselves to /bin/sh
-    for arg do
-        if
-            case $arg in                                #(
-              -*)   false ;;                            # don't mess with options #(
-              /?*)  t=${arg#/} t=/${t%%/*}              # looks like a POSIX filepath
+# Now convert the arguments - kludge to limit ourselves to /bin/sh
+for arg do
+if
+case
+$arg in
+#(
+-*)   false;;                            # don't mess with options #(
+/?*)
+t = ${arg#
+/}
+t =
+/${
+t%%/*}              # looks like a POSIX filepath
                     [ -e "$t" ] ;;                      #(
               *)    false ;;
             esac

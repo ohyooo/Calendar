@@ -1,66 +1,64 @@
-package com.ohyooo.calendar.util
+package com.ohyooo.common.util
 
-import androidx.collection.SparseArrayCompat
-import androidx.collection.set
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit.DAYS
-import java.util.*
+import java.util.Calendar
 
 class LunarDate {
     /**
      * 获取查询日期的年份生肖
      * @return
      */
-    //生肖年
+    // 生肖年
     var animal: String? = null
 
     /**
      * 获取查询日期年份的天干地支
      * @return
      */
-    //干支年
+    // 干支年
     var ganZhiYear: String? = null
 
     /**
      * 获取查询日期的农历年份
      * @return
      */
-    //阴历年
+    // 阴历年
     var lunarYear: String? = null
 
     /**
      * 获取查询日期的农历月份
      * @return
      */
-    //阴历月
+    // 阴历月
     var lunarMonth: String? = null
 
     /**
      * 获取查询日期的农历日
      * @return
      */
-    //阴历日
+    // 阴历日
     var lunarDay: String? = null
 
     /**
      * 获取查询日期的公历节日（不是节日返回空）
      * @return
      */
-    //阳历节日
+    // 阳历节日
     var solarFestival: String? = null
 
     /**
      * 获取查询日期的农历节日（不是节日返回空）
      * @return
      */
-    //阴历节日
+    // 阴历节日
     var lunarFestival: String? = null
 
     /**
      * 获取查询日期的节气数据（不是节气返回空）
      * @return
      */
-    //节气
+    // 节气
     var lunarTerm: String? = null
 }
 
@@ -88,42 +86,45 @@ object LunarCalendarFestivalUtils {
         0x0b5a0, 0x056d0, 0x055b2, 0x049b0, 0x0a577, 0x0a4b0, 0x0aa50, 0x1b255, 0x06d20, 0x0ada0
     )
 
-    //阳历天数
+    // 阳历天数
     private val solarMonths = intArrayOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
 
-    //生肖
+    // 生肖
     private val animals = arrayOf("鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪")
 
-    //天干
+    // 天干
     private val tGan = arrayOf("甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸")
 
-    //地支
+    // 地支
     private val dZhi = arrayOf("子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥")
 
-    //二十四节气
+    // 二十四节气
     private val solarTerms = arrayOf("小寒", "大寒", "立春", "雨水", "惊蛰", "春分", "清明", "谷雨", "立夏", "小满", "芒种", "夏至", "小暑", "大暑", "立秋", "处暑", "白露", "秋分", "寒露", "霜降", "立冬", "小雪", "大雪", "冬至")
 
-    //二十四节气日期偏移度
+    // 二十四节气日期偏移度
     private const val D = 0.2422
 
-    //特殊年份节气日期偏移
-    private val INCREASE_OFFSET_MAP = SparseArrayCompat<IntArray>() // +1 偏移
-    private val DECREASE_OFFSET_MAP = SparseArrayCompat<IntArray>() // -1 偏移
+    // 特殊年份节气日期偏移
+    private val INCREASE_OFFSET_MAP = mutableMapOf<Int, IntArray>() // +1 偏移
+    private val DECREASE_OFFSET_MAP = mutableMapOf<Int, IntArray>() // -1 偏移
 
-    //定义一个二维数组，第一维数组存储的是20世纪的节气C值，第二维数组存储的是21世纪的节气C值,0到23个，依次代表立春、雨水...大寒节气的C值
-    private val CENTURY_ARRAY = arrayOf(doubleArrayOf(6.11, 20.84, 4.6295, 19.4599, 6.3826, 21.4155, 5.59, 20.888, 6.318, 21.86, 6.5, 22.2, 7.928, 23.65, 8.35, 23.95, 8.44, 23.822, 9.098, 24.218, 8.218, 23.08, 7.9, 22.6), doubleArrayOf(5.4055, 20.12, 3.87, 18.73, 5.63, 20.646, 4.81, 20.1, 5.52, 21.04, 5.678, 21.37, 7.108, 22.83, 7.5, 23.13, 7.646, 23.042, 8.318, 23.438, 7.438, 22.36, 7.18, 21.94))
+    // 定义一个二维数组，第一维数组存储的是20世纪的节气C值，第二维数组存储的是21世纪的节气C值,0到23个，依次代表立春、雨水...大寒节气的C值
+    private val CENTURY_ARRAY = arrayOf(
+        doubleArrayOf(6.11, 20.84, 4.6295, 19.4599, 6.3826, 21.4155, 5.59, 20.888, 6.318, 21.86, 6.5, 22.2, 7.928, 23.65, 8.35, 23.95, 8.44, 23.822, 9.098, 24.218, 8.218, 23.08, 7.9, 22.6),
+        doubleArrayOf(5.4055, 20.12, 3.87, 18.73, 5.63, 20.646, 4.81, 20.1, 5.52, 21.04, 5.678, 21.37, 7.108, 22.83, 7.5, 23.13, 7.646, 23.042, 8.318, 23.438, 7.438, 22.36, 7.18, 21.94)
+    )
 
-    //农历月份
+    // 农历月份
     private val lunarNumber = arrayOf("一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二")
 
-    //农历年
+    // 农历年
     private val lunarYears = arrayOf("零", "一", "二", "三", "四", "五", "六", "七", "八", "九")
     private val chineseTen = arrayOf("初", "十", "廿", "卅")
 
-    //农历节日
+    // 农历节日
     private val lunarHoliday = arrayOf("0101 春节", "0115 元宵节", "0202 龙头节", "0505 端午节", "0707 七夕节", "0715 中元节", "0815 中秋节", "0909 重阳节", "1001 寒衣节", "1015 下元节", "1208 腊八节", "1223 小年")
 
-    //公立节日
+    // 公立节日
     private val solarHoliday = arrayOf(
         "0101 元旦", "0214 情人节", "0308 妇女节", "0312 植树节", "0315 消费者权益日", "0401 愚人节", "0422 地球日", "0423 读书日", "0501 劳动节", "0504 青年节", "0512 护士节", "0518 博物馆日", "0519 旅游日", "0601 儿童节",
         "0701 建党节", "0801 建军节", "0910 教师节", "1001 国庆节", "1024 联合国日", "1204 宪法日", "1224 平安夜", "1225 圣诞节"
@@ -145,23 +146,23 @@ object LunarCalendarFestivalUtils {
     // }
 
     init {
-        DECREASE_OFFSET_MAP[0] = intArrayOf(2019) //小寒
-        INCREASE_OFFSET_MAP[1] = intArrayOf(2082) //大寒
-        DECREASE_OFFSET_MAP[3] = intArrayOf(2026) //雨水
-        INCREASE_OFFSET_MAP[5] = intArrayOf(2084) //春分
-        INCREASE_OFFSET_MAP[9] = intArrayOf(2008) //小满
-        INCREASE_OFFSET_MAP[10] = intArrayOf(1902) //芒种
-        INCREASE_OFFSET_MAP[11] = intArrayOf(1928) //夏至
-        INCREASE_OFFSET_MAP[12] = intArrayOf(1925, 2016) //小暑
-        INCREASE_OFFSET_MAP[13] = intArrayOf(1922) //大暑
-        INCREASE_OFFSET_MAP[14] = intArrayOf(2002) //立秋
-        INCREASE_OFFSET_MAP[16] = intArrayOf(1927) //白露
-        INCREASE_OFFSET_MAP[17] = intArrayOf(1942) //秋分
-        INCREASE_OFFSET_MAP[19] = intArrayOf(2089) //霜降
-        INCREASE_OFFSET_MAP[20] = intArrayOf(2089) //立冬
-        INCREASE_OFFSET_MAP[21] = intArrayOf(1978) //小雪
-        INCREASE_OFFSET_MAP[22] = intArrayOf(1954) //大雪
-        DECREASE_OFFSET_MAP[23] = intArrayOf(1918, 2021) //冬至
+        DECREASE_OFFSET_MAP[0] = intArrayOf(2019) // 小寒
+        INCREASE_OFFSET_MAP[1] = intArrayOf(2082) // 大寒
+        DECREASE_OFFSET_MAP[3] = intArrayOf(2026) // 雨水
+        INCREASE_OFFSET_MAP[5] = intArrayOf(2084) // 春分
+        INCREASE_OFFSET_MAP[9] = intArrayOf(2008) // 小满
+        INCREASE_OFFSET_MAP[10] = intArrayOf(1902) // 芒种
+        INCREASE_OFFSET_MAP[11] = intArrayOf(1928) // 夏至
+        INCREASE_OFFSET_MAP[12] = intArrayOf(1925, 2016) // 小暑
+        INCREASE_OFFSET_MAP[13] = intArrayOf(1922) // 大暑
+        INCREASE_OFFSET_MAP[14] = intArrayOf(2002) // 立秋
+        INCREASE_OFFSET_MAP[16] = intArrayOf(1927) // 白露
+        INCREASE_OFFSET_MAP[17] = intArrayOf(1942) // 秋分
+        INCREASE_OFFSET_MAP[19] = intArrayOf(2089) // 霜降
+        INCREASE_OFFSET_MAP[20] = intArrayOf(2089) // 立冬
+        INCREASE_OFFSET_MAP[21] = intArrayOf(1978) // 小雪
+        INCREASE_OFFSET_MAP[22] = intArrayOf(1954) // 大雪
+        DECREASE_OFFSET_MAP[23] = intArrayOf(1918, 2021) // 冬至
     }
 
     /**
@@ -245,7 +246,7 @@ object LunarCalendarFestivalUtils {
      * @param offset
      * @return
      */
-    private fun getOffset(map: SparseArrayCompat<IntArray>, year: Int, n: Int, offset: Int): Int {
+    private fun getOffset(map: MutableMap<Int, IntArray>, year: Int, n: Int, offset: Int): Int {
         var off = 0
         val years = map[n]
         if (null != years) {
@@ -266,22 +267,22 @@ object LunarCalendarFestivalUtils {
      * @return
      */
     private fun sTerm(year: Int, n: Int): Int {
-        val centuryValue: Double //节气的世纪值，每个节气的每个世纪值都不同
+        val centuryValue: Double // 节气的世纪值，每个节气的每个世纪值都不同
         val centuryIndex = when (year) {
-            in 1901..2000 -> 0 //20世纪
-            in 2001..2100 -> 1 //21世纪
+            in 1901..2000 -> 0 // 20世纪
+            in 2001..2100 -> 1 // 21世纪
             else -> return Int.MIN_VALUE // throw RuntimeException("不支持此年份：$year，目前只支持1901年到2100年的时间范围")
         }
         centuryValue = CENTURY_ARRAY[centuryIndex][n]
-        var y = year % 100 //步骤1:取年分的后两位数
-        if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) { //闰年
+        var y = year % 100 // 步骤1:取年分的后两位数
+        if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) { // 闰年
             if (n == 0 || n == 1 || n == 2 || n == 3) {
-                //注意：凡闰年3月1日前闰年数要减一，即：L=[(Y-1)/4],因为小寒、大寒、立春、雨水这两个节气都小于3月1日,所以 y = y-1
-                y -= 1 //步骤2
+                // 注意：凡闰年3月1日前闰年数要减一，即：L=[(Y-1)/4],因为小寒、大寒、立春、雨水这两个节气都小于3月1日,所以 y = y-1
+                y -= 1 // 步骤2
             }
         }
-        var dateNum = (y * D + centuryValue).toInt() - (y / 4) //步骤3，使用公式[Y*D+C]-L计算
-        dateNum += specialYearOffset(year, n) //步骤4，加上特殊的年分的节气偏移量
+        var dateNum = (y * D + centuryValue).toInt() - (y / 4) // 步骤3，使用公式[Y*D+C]-L计算
+        dateNum += specialYearOffset(year, n) // 步骤4，加上特殊的年分的节气偏移量
         return dateNum
     }
 
@@ -349,10 +350,10 @@ object LunarCalendarFestivalUtils {
      * @param currentDate
      */
     fun initLunarCalendarInfo(currentDate: LocalDate, ld: LunarDate) {
-        //设置生肖
+        // 设置生肖
         val year = currentDate.year
         if (ld.animal != null) ld.animal = animals[(year - 4) % 12]
-        //设置天干地支
+        // 设置天干地支
         val num = year - 1900 + 36
         if (ld.ganZhiYear != null) ld.ganZhiYear = tGan[num % 10] + dZhi[num % 12]
 
@@ -361,7 +362,7 @@ object LunarCalendarFestivalUtils {
         // 获取当前日期与1900年1月31日相差的天数
         var offset = DAYS.between(baseDate, currentDate).toInt()
 
-        //用offset减去每农历年的天数，计算当天是农历第几天 iYear最终结果是农历的年份
+        // 用offset减去每农历年的天数，计算当天是农历第几天 iYear最终结果是农历的年份
         var daysOfYear = 0
         var iYear = 1900
         while (iYear < 10000 && offset > 0) {
@@ -419,11 +420,11 @@ object LunarCalendarFestivalUtils {
         }
 
 
-        //设置阴历日
+        // 设置阴历日
         val iDay = offset + 1
         if (ld.lunarDay != null) ld.lunarDay = getLunarDayString(iDay)
 
-        //设置节气
+        // 设置节气
         if (ld.lunarTerm != null) {
             val month = currentDate.monthValue
             val day = currentDate.dayOfMonth
@@ -434,7 +435,7 @@ object LunarCalendarFestivalUtils {
             }
         }
 
-        //设置阳历节日
+        // 设置阳历节日
         if (ld.solarFestival != null) {
             val month = currentDate.monthValue
             val day = currentDate.dayOfMonth
@@ -453,17 +454,17 @@ object LunarCalendarFestivalUtils {
                     break
                 }
             }
-            //判断节日是否是父亲节或母亲节
+            // 判断节日是否是父亲节或母亲节
             val motherOrFatherDay = getMotherOrFatherDay(year, month, day)
             if (motherOrFatherDay != null) {
                 solarFestival = motherOrFatherDay
             }
-            //判断节日是否是复活节
+            // 判断节日是否是复活节
             val easterDay = getEasterDay(year, month, day)
             if (easterDay != null) {
                 solarFestival = easterDay
             }
-            //判断节日是否是感恩节
+            // 判断节日是否是感恩节
             val thanksgiving = thanksgiving(year, month, day)
             if (thanksgiving != null) {
                 solarFestival = thanksgiving
@@ -472,11 +473,11 @@ object LunarCalendarFestivalUtils {
             ld.solarFestival = solarFestival
         }
 
-        //设置阴历节日
+        // 设置阴历节日
         if (ld.lunarFestival != null) {
             var lunarFestival = ""
             for (s in lunarHoliday) {
-                //阴历闰月节日
+                // 阴历闰月节日
                 if (leap) {
                     break
                 }
