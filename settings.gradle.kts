@@ -1,2 +1,2 @@
 rootProject.name = "Calendar"
-include(":app", "benchmark")
+include(":android")
