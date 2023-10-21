@@ -11,7 +11,7 @@ group = "com.ohyooo"
 version = "1.0.0"
 
 kotlin {
-    android()
+    androidTarget()
     jvm("desktop") {
         jvmToolchain(17)
     }
