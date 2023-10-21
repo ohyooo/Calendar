@@ -13,9 +13,6 @@ buildscript {
     repositories {
         mavenLocal()
     }
-    dependencies {
-        classpath(Libs.Others.moko_generator)
-    }
 }
 
 plugins {

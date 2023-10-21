@@ -66,6 +66,9 @@ android {
     compose {
         kotlinCompilerPlugin.set(Libs.Compose.compiler)
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = Libs.Compose.compilerVersion
+    }
 }
 
 val hashTag: String

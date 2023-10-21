@@ -4,7 +4,6 @@ plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
     id("com.android.library")
-    id("dev.icerock.mobile.multiplatform-resources")
 }
 
 group = "com.ohyooo"
@@ -23,8 +22,6 @@ kotlin {
                 api(compose.material)
                 api(compose.material3)
                 api(compose.materialIconsExtended)
-                api(Libs.Others.moko_resources)
-                api(Libs.Others.moko_compose)
             }
         }
         val commonTest by getting {
@@ -63,9 +60,6 @@ android {
     }
 }
 
-multiplatformResources {
-    multiplatformResourcesPackage = "com.ohyooo.common"
-}
 
 // TODO move to gradle plugin
 tasks.withType<DummyFrameworkTask>().configureEach {

@@ -59,19 +59,12 @@ object Libs {
         val indicators = "com.google.accompanist:accompanist-pager-indicators:$accompanistVersion".regLib()
     }
 
-    object Others {
-        val moko_generator = "dev.icerock.moko:resources-generator:0.23.0".regLib()
-        val moko_resources = "dev.icerock.moko:resources:0.23.0".regLib()
-        val moko_compose = "dev.icerock.moko:resources-compose:0.23.0".regLib()
-    }
-
     init {
         Plugin
         Kotlin
         Compose
         AndroidX
         Google
-        Others
     }
 
     private fun String.regLib() = this.also {
