@@ -9,4 +9,4 @@ pluginManagement {
 
 rootProject.name = "Calendar"
 
-include(":android", ":desktop", ":common")
+include(":android", ":desktop", ":shared")

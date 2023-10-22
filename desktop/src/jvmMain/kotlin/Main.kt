@@ -1,6 +1,6 @@
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.ohyooo.common.App
+import com.ohyooo.shared.App
 
 
 fun main() = application {

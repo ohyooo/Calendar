@@ -1,4 +1,4 @@
-@file:Suppress("UnstableApiUsage")
+// @file:Suppress("UnstableApiUsage")
 
 plugins {
     id("org.jetbrains.compose")
@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":common"))
+    implementation(project(":shared"))
     implementation(Libs.AndroidX.compose)
 }
 
