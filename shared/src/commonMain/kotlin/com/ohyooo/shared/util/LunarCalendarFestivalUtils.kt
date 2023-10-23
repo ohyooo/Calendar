@@ -3,6 +3,7 @@ package com.ohyooo.shared.util
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.daysUntil
 import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.toLocalDateTime
 
@@ -195,7 +196,11 @@ object LunarCalendarFestivalUtils {
      * @param y
      * @return
      */
-    private fun leapMonth(y: Int) = (lunarInfo[y - 1900] and 0xf).toInt()
+    private fun leapMonth(y: Int) = try {
+        (lunarInfo[y - 1900] and 0xf).toInt()
+    } catch (e: Exception) {
+        0
+    }
 
     /**
      * 返回农历y年m月的总天数
@@ -375,7 +380,7 @@ object LunarCalendarFestivalUtils {
 
         // 获取当前日期与1900年1月31日相差的天数
         val baseDate = LocalDate(1900, 1, 31)
-        var offset = currentDate.dayOfYear - baseDate.dayOfYear
+        var offset = baseDate.daysUntil(currentDate)
 
         // 用offset减去每农历年的天数，计算当天是农历第几天 iYear最终结果是农历的年份
         var daysOfYear = 0

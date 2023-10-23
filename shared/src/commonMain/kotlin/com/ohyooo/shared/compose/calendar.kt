@@ -65,10 +65,10 @@ fun CalendarMain() {
     val currentLocaleDate = currentLocaleDate
     val prevDaySize = prevDaySize
 
-    var currentMonth by rememberSaveable { mutableStateOf(currentLocaleDate) }
+    var currentMonth by remember { mutableStateOf(currentLocaleDate) }
 
     val state = rememberSaveable(saver = LazyGridState.Saver) {
-        LazyGridState(prevDaySize.toInt() - currentLocaleDate.dayOfMonth + 2, 0)
+        LazyGridState(prevDaySize - currentLocaleDate.dayOfMonth + 2, 0)
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -78,7 +78,7 @@ fun CalendarMain() {
     Column(modifier = Modifier.background(mainBgColor)) {
         Clock {
             coroutineScope.launch {
-                state.animateScrollToItem(prevDaySize.toInt() - currentLocaleDate.dayOfMonth + 2)
+                state.animateScrollToItem(prevDaySize - currentLocaleDate.dayOfMonth + 2)
                 delay(AnimationConstants.DefaultDurationMillis.toLong())
                 scrollState.onScroll(true)
             }
@@ -96,7 +96,7 @@ fun CalendarMain() {
 
         CalendarWeekDays()
 
-        CalendarMonth(state, scrollState, currentLocaleDate, prevDaySize.toInt()) {
+        CalendarMonth(state, scrollState, currentLocaleDate, prevDaySize) {
             currentMonth = it
         }
     }
