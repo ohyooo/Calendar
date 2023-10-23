@@ -54,7 +54,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Month
+import kotlinx.datetime.plus
+import kotlinx.datetime.until
 
 @Composable
 fun CalendarMain() {
@@ -119,7 +123,7 @@ fun Clock(onClick: () -> Unit) {
 }
 
 @Composable
-fun CalendarTitle(date: LocalDateTime, onClick: (Boolean) -> Unit) {
+fun CalendarTitle(date: LocalDate, onClick: (Boolean) -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = monthYearFromDate(date),
@@ -148,10 +152,17 @@ fun CalendarWeekDays() {
     })
 }
 
+fun monthDays(year: Int, month: Month): Int {
+    val start = LocalDate(year, month, 1)
+    val end = start.plus(1, DateTimeUnit.MONTH)
+    return start.until(end, DateTimeUnit.DAY)
+}
+
 @Composable
-fun CalendarMonth(state: LazyGridState, scrollState: StateClass, nowLocaleDate: LocalDateTime, days: Int, onDateChange: (LocalDateTime) -> Unit) {
+fun CalendarMonth(state: LazyGridState, scrollState: StateClass, nowLocaleDate: LocalDate, days: Int, onDateChange: (LocalDate) -> Unit) {
     var currentMonthRange by remember {
-        mutableStateOf(state.firstVisibleItemIndex..days + nowLocaleDate.toLocalDate().lengthOfMonth() - nowLocaleDate.dayOfMonth + 1)
+        val nowLocaleDateLengthOfMonth = monthDays(nowLocaleDate.year, nowLocaleDate.month)
+        mutableStateOf(state.firstVisibleItemIndex..days + nowLocaleDateLengthOfMonth - nowLocaleDate.dayOfMonth + 1)
     }
 
     val coroutineScope = rememberCoroutineScope()

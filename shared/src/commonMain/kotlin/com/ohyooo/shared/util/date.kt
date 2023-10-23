@@ -1,20 +1,26 @@
 package com.ohyooo.shared.util
 
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit.DAYS
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.until
 
-val currentLocaleDate: LocalDateTime get() = LocalDate.now().atStartOfDay()
+val currentLocaleDate: LocalDate get() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
-val baseDate: LocalDate = LocalDate.of(1900, 1, 31)
-val baseDateDayOfWeek = baseDate.atStartOfDay().dayOfWeek.value
+val baseDate: LocalDate = LocalDate(1900, 1, 31)
+val baseDateDayOfWeek = baseDate.dayOfWeek.ordinal + 1  // dayOfWeek is an enum in kotlinx-datetime, so we convert it to an int
 
-val prevDaySize get() = DAYS.between(baseDate, currentLocaleDate.toLocalDate()) - baseDateDayOfWeek - 2
+val prevDaySize get() = (baseDate.until(currentLocaleDate, DateTimeUnit.DAY) - baseDateDayOfWeek - 2)
 
-val firstDay: LocalDateTime get() = currentLocaleDate.minusDays(prevDaySize)
+val firstDay: LocalDate get() = currentLocaleDate.minus(DatePeriod(days = prevDaySize))
 
-fun getMonthDay(day: Int): LocalDateTime {
-    return firstDay.plusDays(day.toLong() - 1)
+fun getMonthDay(day: Int): LocalDate {
+    return firstDay.plus(DatePeriod(days = day - 1))
 }
 
 fun getHighlightRange(visibleRange: IntRange): IntRange {
@@ -26,14 +32,14 @@ fun getHighlightRange(visibleRange: IntRange): IntRange {
 
     visibleRange.forEach { day ->
         getMonthDay(day).apply {
-            if (currentMonth == monthValue) {
+            if (currentMonth == month.ordinal) {
                 ++currentMonthDayCount
             } else {
                 if (isFirstVisibleMonth >= 2) return@forEach
                 isFirstVisibleMonth++
 
                 currentMonthDayCount = 1
-                currentMonth = monthValue
+                currentMonth = month.ordinal
             }
 
             if (currentMonthDayCount > maxMonthDayCount) {

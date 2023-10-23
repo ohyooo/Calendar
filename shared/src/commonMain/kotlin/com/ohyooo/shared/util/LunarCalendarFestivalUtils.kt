@@ -1,8 +1,10 @@
 package com.ohyooo.shared.util
 
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit.DAYS
-import java.util.Calendar
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.isoDayNumber
+import kotlinx.datetime.toLocalDateTime
 
 class LunarDate {
     /**
@@ -296,14 +298,20 @@ object LunarCalendarFestivalUtils {
     private fun getMotherOrFatherDay(year: Int, month: Int, day: Int): String? {
         if (month != 5 && month != 6) return null
         if (month == 5 && (day < 8 || day > 14) || month == 6 && (day < 15 || day > 21)) return null
-        val calendar = Calendar.getInstance()
-        calendar[year, month - 1] = 1
-        var weekDate = calendar[Calendar.DAY_OF_WEEK]
-        weekDate = if (weekDate == 1) 7 else weekDate - 1
+
+        val instant = Clock.System.now()
+        val currentYear = instant.toLocalDateTime(TimeZone.UTC).year
+
+        if (year != currentYear) return null
+
+        val firstDayOfMonth = LocalDate(currentYear, month, 1)
+        val weekDate = firstDayOfMonth.dayOfWeek.isoDayNumber % 7
+
         when (month) {
             5 -> if (day == 15 - weekDate) return "母亲节"
             6 -> if (day == 22 - weekDate) return "父亲节"
         }
+
         return null
     }
 
@@ -317,10 +325,15 @@ object LunarCalendarFestivalUtils {
     private fun thanksgiving(year: Int, month: Int, day: Int): String? {
         if (month != 11) return null
         if (day < 19 || day > 28) return null
-        val calendar = Calendar.getInstance()
-        calendar[year, month - 1] = 1
-        var weekDate = calendar[Calendar.DAY_OF_WEEK]
-        weekDate = if (weekDate == 1) 7 else weekDate - 1
+
+        val instant = Clock.System.now()
+        val currentYear = instant.toLocalDateTime(TimeZone.UTC).year
+
+        if (year != currentYear) return null
+
+        val firstDayOfMonth = LocalDate(currentYear, month, 1)
+        val weekDate = firstDayOfMonth.dayOfWeek.isoDayNumber % 7
+
         return if (day == 29 - weekDate + 4) "感恩节" else null
     }
 
@@ -353,6 +366,7 @@ object LunarCalendarFestivalUtils {
         // 设置生肖
         val year = currentDate.year
         if (ld.animal != null) ld.animal = animals[(year - 4) % 12]
+
         // 设置天干地支
         val num = year - 1900 + 36
         if (ld.ganZhiYear != null) ld.ganZhiYear = tGan[num % 10] + dZhi[num % 12]
@@ -360,7 +374,8 @@ object LunarCalendarFestivalUtils {
         ///////////设置阴历/////////////////////////////////////////////////////////
 
         // 获取当前日期与1900年1月31日相差的天数
-        var offset = DAYS.between(baseDate, currentDate).toInt()
+        val baseDate = LocalDate(1900, 1, 31)
+        var offset = currentDate.dayOfYear - baseDate.dayOfYear
 
         // 用offset减去每农历年的天数，计算当天是农历第几天 iYear最终结果是农历的年份
         var daysOfYear = 0
@@ -374,7 +389,7 @@ object LunarCalendarFestivalUtils {
             offset += daysOfYear
             iYear--
         }
-        if (ld.lunarYear != null) ld.lunarYear = getLunarYearString(iYear.toString() + "")
+        if (ld.lunarYear != null) ld.lunarYear = getLunarYearString(iYear.toString())
 
         val leapMonth = leapMonth(iYear) // 闰哪个月, 1-12
         var leap = false
@@ -383,7 +398,6 @@ object LunarCalendarFestivalUtils {
         var daysOfMonth = 0
         var iMonth = 1
         while (iMonth < 13 && offset > 0) {
-
             // 闰月
             if (leapMonth > 0 && iMonth == leapMonth + 1 && !leap) {
                 --iMonth
@@ -395,6 +409,7 @@ object LunarCalendarFestivalUtils {
             if (leap && iMonth == leapMonth + 1) leap = false
             iMonth++
         }
+
         // offset为0时，并且刚才计算的月份是闰月，要校正
         if (offset == 0 && leapMonth > 0 && iMonth == leapMonth + 1) {
             if (leap) {
@@ -409,6 +424,7 @@ object LunarCalendarFestivalUtils {
             offset += daysOfMonth
             --iMonth
         }
+
         // 设置对应的阴历月份
         if (ld.lunarMonth != null) {
             ld.lunarMonth = when {
@@ -419,14 +435,13 @@ object LunarCalendarFestivalUtils {
             } + "月"
         }
 
-
         // 设置阴历日
         val iDay = offset + 1
         if (ld.lunarDay != null) ld.lunarDay = getLunarDayString(iDay)
 
         // 设置节气
         if (ld.lunarTerm != null) {
-            val month = currentDate.monthValue
+            val month = currentDate.monthNumber
             val day = currentDate.dayOfMonth
             ld.lunarTerm = when (day) {
                 sTerm(year, (month - 1) * 2) -> solarTerms[(month - 1) * 2]
@@ -437,15 +452,14 @@ object LunarCalendarFestivalUtils {
 
         // 设置阳历节日
         if (ld.solarFestival != null) {
-            val month = currentDate.monthValue
+            val month = currentDate.monthNumber
             val day = currentDate.dayOfMonth
-
             var solarFestival = ""
 
             for (s in solarHoliday) {
                 // 返回公历节假日名称
-                val sd = s.split(" ").toTypedArray()[0] // 节假日的日期
-                val sdv = s.split(" ").toTypedArray()[1] // 节假日的名称
+                val sd = s.split(" ")[0] // 节假日的日期
+                val sdv = s.split(" ")[1] // 节假日的名称
                 val smonth_v = month
                 val sday_v = day
                 val smd = smonth_v + sday_v
@@ -454,6 +468,7 @@ object LunarCalendarFestivalUtils {
                     break
                 }
             }
+
             // 判断节日是否是父亲节或母亲节
             val motherOrFatherDay = getMotherOrFatherDay(year, month, day)
             if (motherOrFatherDay != null) {
@@ -482,10 +497,10 @@ object LunarCalendarFestivalUtils {
                     break
                 }
                 // 返回农历节假日名称
-                val ldk = s.split(" ").toTypedArray()[0] // 节假日的日期
-                val ldv = s.split(" ").toTypedArray()[1] // 节假日的名称
-                val lmonthV = if (iMonth < 10) "0$iMonth" else iMonth.toString() + ""
-                val ldayV = if (iDay < 10) "0$iDay" else iDay.toString() + ""
+                val ldk = s.split(" ")[0] // 节假日的日期
+                val ldv = s.split(" ")[1] // 节假日的名称
+                val lmonthV = if (iMonth < 10) "0$iMonth" else iMonth.toString()
+                val ldayV = if (iDay < 10) "0$iDay" else iDay.toString()
                 val lmd = lmonthV + ldayV
                 if ("12" == lmonthV) { // 除夕夜需要特殊处理
                     if (daysOfMonth == 29 && iDay == 29 || daysOfMonth == 30 && iDay == 30) {

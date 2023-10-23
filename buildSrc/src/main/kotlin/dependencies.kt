@@ -27,6 +27,7 @@ object Libs {
 
     object Kotlin {
         val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3".regLib()
+        val datetime="org.jetbrains.kotlinx:kotlinx-datetime:0.4.1".regLib()
     }
 
     object Compose {
@@ -46,6 +47,7 @@ object Libs {
     }
 
     object AndroidX {
+        val appcompat = "androidx.appcompat:appcompat:1.6.1".regLib()
         val coreKtx = "androidx.core:core-ktx:1.12.0".regLib()
         val fragmentKtx = "androidx.fragment:fragment-ktx:1.6.1".regLib()
         val compose = "androidx.activity:activity-compose:1.8.0".regLib()

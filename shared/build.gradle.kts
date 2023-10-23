@@ -1,9 +1,7 @@
-import org.jetbrains.kotlin.gradle.tasks.DummyFrameworkTask
-
 plugins {
     kotlin("multiplatform")
-    id("org.jetbrains.compose")
     id("com.android.library")
+    id("org.jetbrains.compose")
 }
 
 group = "com.ohyooo"
@@ -28,20 +26,20 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(compose.runtime)
-                api(compose.foundation)
-                api(compose.material)
-                api(compose.material3)
-                api(compose.materialIconsExtended)
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material)
+                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+                implementation(compose.components.resources)
+                implementation(compose.material3)
+                implementation(compose.materialIconsExtended)
+                implementation(Libs.Kotlin.datetime)
             }
         }
-        // val sharedTest by getting {
-        //     dependencies {
-        //         implementation(kotlin("test"))
-        //     }
-        // }
         val androidMain by getting {
             dependencies {
+                api(Libs.AndroidX.appcompat)
+                api(Libs.AndroidX.compose)
                 api(Libs.AndroidX.coreKtx)
                 api(Libs.AndroidX.startup)
             }
@@ -51,7 +49,6 @@ kotlin {
                 api(compose.preview)
             }
         }
-        val desktopTest by getting
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -65,9 +62,13 @@ kotlin {
 }
 
 android {
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    namespace = "com.ohyooo.calendar.shared"
     compileSdk = Ext.compileSdk
+    namespace = "com.ohyooo.shared"
+
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    sourceSets["main"].res.srcDirs("src/androidMain/res")
+    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+
     defaultConfig {
         minSdk = Ext.minSdk
     }
@@ -75,28 +76,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    compose {
-        kotlinCompilerPlugin.set(Libs.Compose.compiler)
+    kotlin {
+        jvmToolchain(17)
     }
-}
-
-
-// TODO move to gradle plugin
-tasks.withType<DummyFrameworkTask>().configureEach {
-    @Suppress("ObjectLiteralToLambda")
-    doLast(object : Action<Task> {
-        override fun execute(task: Task) {
-            task as DummyFrameworkTask
-
-            val frameworkDir = File(task.destinationDir, task.frameworkName.get() + ".framework")
-
-            listOf(
-                "compose-resources-gallery:shared.bundle"
-            ).forEach { bundleName ->
-                val bundleDir = File(frameworkDir, bundleName)
-                bundleDir.mkdir()
-                File(bundleDir, "dummyFile").writeText("dummy")
-            }
-        }
-    })
 }
