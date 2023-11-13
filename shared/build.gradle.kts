@@ -38,10 +38,8 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                api(Libs.androidx.appcompat)
-                api(Libs.androidx.compose)
-                api(Libs.androidx.core.ktx)
-                api(Libs.androidx.startup)
+                api(libs.androidx.compose.activity)
+                api(libs.androidx.core.ktx)
             }
         }
         val desktopMain by getting {
