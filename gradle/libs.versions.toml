@@ -28,6 +28,9 @@ androidx-core-ktx = "androidx.core:core-ktx:1.10.1"
 androidx-activity = "androidx.activity:activity:1.7.2"
 androidx-compose-activity = "androidx.activity:activity-compose:1.8.0"
 
+# Compose
+compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "compose_compiler" }
+
 [bundles]
 all = [
     "kotlinx-coroutines",
