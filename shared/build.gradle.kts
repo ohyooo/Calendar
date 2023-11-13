@@ -33,15 +33,15 @@ kotlin {
                 implementation(compose.components.resources)
                 implementation(compose.material3)
                 implementation(compose.materialIconsExtended)
-                implementation(Libs.Kotlin.datetime)
+                implementation(libs.kotlinx.datetime)
             }
         }
         val androidMain by getting {
             dependencies {
-                api(Libs.AndroidX.appcompat)
-                api(Libs.AndroidX.compose)
-                api(Libs.AndroidX.coreKtx)
-                api(Libs.AndroidX.startup)
+                api(Libs.androidx.appcompat)
+                api(Libs.androidx.compose)
+                api(Libs.androidx.core.ktx)
+                api(Libs.androidx.startup)
             }
         }
         val desktopMain by getting {
@@ -62,15 +62,15 @@ kotlin {
 }
 
 android {
-    compileSdk = Ext.compileSdk
     namespace = "com.ohyooo.shared"
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
+    compileSdk = libs.versions.compile.sdk.get().toInt()
     defaultConfig {
-        minSdk = Ext.minSdk
+        minSdk = libs.versions.min.sdk.get().toInt()
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

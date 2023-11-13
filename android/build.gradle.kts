@@ -1,4 +1,4 @@
-// @file:Suppress("UnstableApiUsage")
+@file:Suppress("UnstableApiUsage")
 
 plugins {
     id("org.jetbrains.compose")
@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
     implementation(project(":shared"))
-    implementation(Libs.AndroidX.compose)
+    implementation(libs.androidx.compose.activity)
 }
 
 android {
@@ -31,14 +31,15 @@ android {
             enableV4Signing = true
         }
     }
-    namespace = "com.ohyooo.android"
-    compileSdk = Ext.compileSdk
+    namespace = libs.versions.application.id.get()
+    compileSdk = libs.versions.compile.sdk.get().toInt()
     defaultConfig {
-        applicationId = "com.ohyooo.calendar"
-        minSdk = Ext.minSdk
-        targetSdk = Ext.targetSdk
-        versionCode = Ext.versionCode
-        versionName = Ext.versionName + hashTag
+        applicationId = libs.versions.application.id.get()
+        minSdk = libs.versions.min.sdk.get().toInt()
+        targetSdk = libs.versions.target.sdk.get().toInt()
+        versionCode = libs.versions.version.code.get().toInt()
+        versionName = libs.versions.target.sdk.get() + hashTag
+        proguardFile("proguard-rules.pro")
         signingConfig = signingConfigs.getByName("debug")
     }
     compileOptions {
@@ -64,7 +65,7 @@ android {
         shaders = false
     }
     compose {
-        kotlinCompilerPlugin.set(Libs.Compose.compiler)
+        kotlinCompilerPlugin.set(libs.compose.compiler)
     }
     composeOptions {
         kotlinCompilerExtensionVersion = Libs.Compose.compilerVersion
