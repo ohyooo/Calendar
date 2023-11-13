@@ -65,10 +65,10 @@ android {
         shaders = false
     }
     compose {
-        kotlinCompilerPlugin.set(libs.compose.compiler)
+        kotlinCompilerPlugin.set(libs.compose.compiler.get().toString())
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Libs.Compose.compilerVersion
+        kotlinCompilerExtensionVersion = libs.versions.compose
     }
 }
 
