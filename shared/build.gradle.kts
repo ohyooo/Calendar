@@ -40,6 +40,7 @@ kotlin {
             dependencies {
                 api(libs.androidx.compose.activity)
                 api(libs.androidx.core.ktx)
+                api(libs.androidx.startup.runtime)
             }
         }
         val desktopMain by getting {
