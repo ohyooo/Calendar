@@ -16,7 +16,7 @@ agp = { id = "com.android.application", version.ref = "agp" }
 kgp = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ks = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kmm = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-jc = { id = "org.jetbrains.compose", version = "1.5.10" }
+jc = { id = "org.jetbrains.compose", version = "1.5.11" }
 
 [libraries]
 # Kotlin
