@@ -20,53 +20,49 @@ jobs:
           timeZone: 8
           format: 'YYYYMMDDHHmmss'
      
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '17'        
+          java-version: '21'        
  
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Config git
-        run: git config user.name ohyooo && git config user.mail i@ohyooo.com
-
-      - name: Push changes
-        run: git add . && git commit -m "update libs" && git push || true
-
       - name: Build APK
         run: ./gradlew assembleRelease
      
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ steps.time.outputs.time }}
-      #     release_name: Calendar Release ${{ steps.time.outputs.time }}
-      #     draft: false
-      #     prerelease: false
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.time.outputs.time }}
+          release_name: QRScan Release ${{ steps.time.outputs.time }}
+          draft: false
+          prerelease: false
 
-      # - name: Generate release tag
-      #   id: tag
-      #   run: |
-      #     echo "::set-output name=release_tag::$(date +"%Y.%m.%d_%H-%M")"
-      # - name: Upload Release
-      #   uses: softprops/action-gh-release@v1
-      #   with:
-      #     tag_name: ${{ steps.tag.outputs.release_tag }}
-      #     files: "app/build/outputs/apk/release/*.apk"
+      - name: Generate release tag
+        id: tag
+        run: |
+          echo "::set-output name=release_tag::$(date +"%Y.%m.%d_%H-%M")"
+
+      - name: Upload Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag.outputs.release_tag }}
+          files: "app/build/outputs/apk/release/*.apk"
  
-      # - name: Remove old Releases
-      #   uses: dev-drprasad/delete-older-releases@v0.2.0
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     keep_latest: 5
-      #     delete_tags: true
+      - name: Remove old Releases
+        uses: dev-drprasad/delete-older-releases@v0.3.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          keep_latest: 5
+          delete_tags: true
 
       - name: Delete workflow runs
         uses: GitRML/delete-workflow-runs@main
         with:
           retain_days: 10
+          keep_minimum_runs: 2
