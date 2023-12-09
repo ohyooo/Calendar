@@ -10,7 +10,7 @@ version = "1.0.0"
 kotlin {
     androidTarget()
     jvm("desktop") {
-        jvmToolchain(17)
+        jvmToolchain(21)
     }
     listOf(
         iosX64(),
@@ -72,10 +72,10 @@ android {
         minSdk = libs.versions.min.sdk.get().toInt()
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlin {
-        jvmToolchain(17)
+        jvmToolchain(21)
     }
 }
