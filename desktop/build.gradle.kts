@@ -10,7 +10,7 @@ version = "1.0.0"
 
 kotlin {
     jvm {
-        jvmToolchain(17)
+        jvmToolchain(21)
         withJava()
     }
     sourceSets {
