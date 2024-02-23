@@ -39,7 +39,7 @@ android {
         targetSdk = libs.versions.target.sdk.get().toInt()
         versionCode = libs.versions.version.code.get().toInt()
         versionName = libs.versions.target.sdk.get() + hashTag
-        proguardFile("proguard-rules.pro")
+        proguardFile("consumer-rules.pro")
         signingConfig = signingConfigs.getByName("debug")
     }
     compileOptions {
