@@ -43,7 +43,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: android/build/outputs/apk/release/*.apk
-          asset_name: JPSyllabary
+          asset_name: Calendar
           tag: ${{ github.ref }}_${{ steps.time.outputs.time }}
           overwrite: true
           file_glob: true
