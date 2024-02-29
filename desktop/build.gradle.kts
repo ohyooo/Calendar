@@ -24,7 +24,6 @@ kotlin {
 }
 
 compose {
-    kotlinCompilerPlugin.set(libs.compose.compiler.get().toString())
     desktop {
         application {
             mainClass = "MainKt"

@@ -60,3 +60,5 @@ android {
         jvmToolchain(21)
     }
 }
+
+task("testClasses")

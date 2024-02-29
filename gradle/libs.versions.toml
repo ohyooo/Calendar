@@ -8,7 +8,6 @@ version_name = "2.10"
 
 agp = "8.2.2"
 kotlin = "1.9.22"
-compose = "1.5.4"
 compose_compiler = "1.5.10"
 
 [plugins]
@@ -16,7 +15,7 @@ agp = { id = "com.android.application", version.ref = "agp" }
 kgp = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ks = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kmm = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-jc = { id = "org.jetbrains.compose", version = "1.5.12" }
+jc = { id = "org.jetbrains.compose", version = "1.6.0" }
 
 [libraries]
 # Kotlin
@@ -28,9 +27,6 @@ androidx-core-ktx = "androidx.core:core-ktx:1.12.0"
 androidx-activity = "androidx.activity:activity:1.8.2"
 androidx-compose-activity = "androidx.activity:activity-compose:1.8.2"
 androidx-startup-runtime = "androidx.startup:startup-runtime:1.1.1"
-
-# Compose
-compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "compose_compiler" }
 
 [bundles]
 all = [
