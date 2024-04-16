@@ -48,3 +48,6 @@ abstract class GitVersionValueSource : ValueSource<String, ValueSourceParameters
         }
     }
 }
+
+val gitVersion = providers.of(GitVersionValueSource::class.java) {}.get()
+extra["gitVersion"] = gitVersion
