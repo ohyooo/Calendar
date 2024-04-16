@@ -38,7 +38,8 @@ android {
         minSdk = libs.versions.min.sdk.get().toInt()
         targetSdk = libs.versions.target.sdk.get().toInt()
         versionCode = libs.versions.version.code.get().toInt()
-        versionName = libs.versions.target.sdk.get() + hashTag
+        val gitVersion = providers.of(GitVersionValueSource::class) {}.get()
+        versionName = libs.versions.target.sdk.get() + gitVersion
         proguardFile("consumer-rules.pro")
         signingConfig = signingConfigs.getByName("debug")
     }
@@ -68,19 +69,3 @@ android {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 }
-
-val hashTag: String
-    get() = ProcessBuilder(listOf("git", "rev-parse", "--short", "HEAD"))
-        .directory(rootDir)
-        .redirectOutput(ProcessBuilder.Redirect.PIPE)
-        .redirectError(ProcessBuilder.Redirect.PIPE)
-        .start()
-        .apply { waitFor(5, TimeUnit.SECONDS) }
-        .run {
-            val error = errorStream.bufferedReader().readText().trim()
-            if (error.isNotEmpty()) {
-                ""
-            } else {
-                "-" + inputStream.bufferedReader().readText().trim()
-            }
-        }
