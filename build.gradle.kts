@@ -1,3 +1,8 @@
+@file:Suppress("UnstableApiUsage")
+
+import java.io.ByteArrayOutputStream
+import java.nio.charset.Charset
+
 group = "com.ohyooo"
 version = "1.0.0"
 
