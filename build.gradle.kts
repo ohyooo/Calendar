@@ -23,3 +23,23 @@ plugins {
     alias(libs.plugins.jc) apply false
 }
 
+abstract class GitVersionValueSource : ValueSource<String, ValueSourceParameters.None> {
+    @get:Inject
+    abstract val execOperations: ExecOperations
+
+    override fun obtain(): String {
+        val output = ByteArrayOutputStream()
+        val error = ByteArrayOutputStream()
+        execOperations.exec {
+            commandLine("git rev-parse --short HEAD".split(" "))
+            standardOutput = output
+            errorOutput = error
+        }
+
+        return if (error.toByteArray().isNotEmpty()) {
+            ""
+        } else {
+            "-" + String(output.toByteArray(), Charset.defaultCharset()).trim()
+        }
+    }
+}
