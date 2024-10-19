@@ -24,6 +24,7 @@ plugins {
     alias(libs.plugins.kmm) apply false
     alias(libs.plugins.ks) apply false
     alias(libs.plugins.agp) apply false
+    alias(libs.plugins.alp) apply false
     alias(libs.plugins.kgp) apply false
     alias(libs.plugins.jc) apply false
     alias(libs.plugins.cc) apply false

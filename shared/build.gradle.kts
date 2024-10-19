@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+
 plugins {
     alias(libs.plugins.kmm)
     alias(libs.plugins.jc)
@@ -11,17 +13,28 @@ version = "1.0.0"
 
 kotlin {
     androidTarget()
-    jvm("desktop") {
-        jvmToolchain(21)
+    jvm("desktop")
+    wasmJs {
+        moduleName = "shared"
+        browser {
+            commonWebpackConfig {
+                outputFileName = "shared.js"
+                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                    static = (static ?: mutableListOf()).apply {
+                        // Serve sources to debug inside browser
+                        add(project.projectDir.path)
+                    }
+                }
+            }
+        }
+        binaries.executable()
     }
-
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
-                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation(compose.material3)
                 implementation(compose.materialIconsExtended)
