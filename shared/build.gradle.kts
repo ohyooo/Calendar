@@ -1,7 +1,9 @@
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.kmm)
+    alias(libs.plugins.jc)
+    alias(libs.plugins.alp)
+    alias(libs.plugins.ks)
+    alias(libs.plugins.cc)
 }
 
 group = "com.ohyooo"
