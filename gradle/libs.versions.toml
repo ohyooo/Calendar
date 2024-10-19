@@ -12,6 +12,7 @@ compose_compiler = "1.5.10"
 
 [plugins]
 agp = { id = "com.android.application", version.ref = "agp" }
+alp = { id = "com.android.library", version.ref = "agp" }
 kgp = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ks = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kmm = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
