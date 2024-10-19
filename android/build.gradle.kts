@@ -4,6 +4,7 @@ plugins {
     id("org.jetbrains.compose")
     id("com.android.application")
     kotlin("android")
+    alias(libs.plugins.cc)
 }
 
 group = "com.ohyooo"
