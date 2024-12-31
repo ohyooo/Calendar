@@ -1,5 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.ByteArrayOutputStream
 import java.nio.charset.Charset
 
@@ -28,6 +29,20 @@ plugins {
     alias(libs.plugins.kgp) apply false
     alias(libs.plugins.jc) apply false
     alias(libs.plugins.cc) apply false
+}
+
+
+allprojects {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+            freeCompilerArgs.addAll(
+                listOf(
+                    "-Xbackend-threads=12", "-Xcontext-receivers", "-jvm-target=21"
+                )
+            )
+        }
+    }
 }
 
 abstract class GitVersionValueSource : ValueSource<String, ValueSourceParameters.None> {
