@@ -38,23 +38,23 @@ jobs:
       - name: Build APK
         run: ./gradlew :android:assembleRelease
 
-      - name: Upload to release
-        uses: svenstaro/upload-release-action@master
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: android/build/outputs/apk/release/*.apk
-          asset_name: Calendar
-          tag: ${{ github.ref }}_${{ steps.time.outputs.time }}
-          overwrite: true
-          file_glob: true
+      # - name: Upload to release
+      #   uses: svenstaro/upload-release-action@master
+      #   with:
+      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
+      #     file: android/build/outputs/apk/release/*.apk
+      #     asset_name: Calendar
+      #     tag: ${{ github.ref }}_${{ steps.time.outputs.time }}
+      #     overwrite: true
+      #     file_glob: true
 
-      - name: Remove old Releases
-        uses: dev-drprasad/delete-older-releases@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          keep_latest: 3
-          delete_tags: true
+      # - name: Remove old Releases
+      #   uses: dev-drprasad/delete-older-releases@master
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     keep_latest: 3
+      #     delete_tags: true
 
       - name: Delete workflow runs
         uses: GitRML/delete-workflow-runs@main
