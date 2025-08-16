@@ -1,22 +1,25 @@
 package com.ohyooo.shared.util
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 // private val monthYearFromDateFormatter = DateTimeFormatter("yyyy年MM月", Locale.CHINA)
 
 fun monthYearFromDate(date: LocalDate): String {
     // return date.toJavaLocalDateTime().format(monthYearFromDateFormatter)
-    val yearMonth = "${date.year}年${date.monthNumber}月"
+    val yearMonth = "${date.year}年${date.month.number}月"
     return yearMonth
 }
 
 // private val hourMinuteSecondNowFormatter = DateTimeFormatter("HH:mm:ss", Locale.CHINA)
 
+@OptIn(ExperimentalTime::class)
 fun hourMinuteSecondNow(): String {
     val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     // return now.toJavaLocalDateTime().format(hourMinuteSecondNowFormatter)
@@ -26,10 +29,11 @@ fun hourMinuteSecondNow(): String {
 
 // private val yearMonthDayNowFormatter = DateTimeFormatter("yyyy年MM月dd日", Locale.CHINA)
 
+@OptIn(ExperimentalTime::class)
 fun yearMonthDayWithLunarNow(): String {
     val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     val dayOfWeekString = dayOfWeek(now.dayOfWeek.ordinal + 1)
-    val fullDate = "${now.year}年${now.monthNumber}月${now.dayOfMonth}日"
+    val fullDate = "${now.year}年${now.month.number}月${now.day}日"
 
     return "$fullDate，星期$dayOfWeekString ${yearMonthDayNowLunar(now.date)}"
     // return "${now.toJavaLocalDateTime().format(yearMonthDayNowFormatter)}，星期$dayOfWeekString ${yearMonthDayNowLunar()}"
@@ -69,7 +73,7 @@ fun saturdayOfWeek(day: Int): String {
 
 fun getDay(day: Int): String {
     val date = firstDay.plus(DatePeriod(days = day - 1))
-    return "$day\n${date.year} ${date.monthNumber} ${date.dayOfMonth}"
+    return "$day\n${date.year} ${date.month.number} ${date.day}"
 }
 
 // ... Assuming LunarCalendarFestivalUtils and LunarDate are properly defined elsewhere
@@ -83,7 +87,7 @@ fun getLunarDay(day: Int): String {
             lunarTerm = ""
         }
         LunarCalendarFestivalUtils.initLunarCalendarInfo(date, ld)
-        return "${date.dayOfMonth}\n${ld.lunarFestival.orEmpty().ifBlank { ld.lunarTerm.orEmpty().ifBlank { ld.lunarDay } }}"
+        return "${date.day}\n${ld.lunarFestival.orEmpty().ifBlank { ld.lunarTerm.orEmpty().ifBlank { ld.lunarDay } }}"
     } catch (e: Exception) {
         return "$day"
     }

@@ -1,11 +1,13 @@
 package com.ohyooo.shared.util
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
 import kotlinx.datetime.isoDayNumber
+import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class LunarDate {
     /**
@@ -300,6 +302,7 @@ object LunarCalendarFestivalUtils {
      * @param day
      * @return
      */
+    @OptIn(ExperimentalTime::class)
     private fun getMotherOrFatherDay(year: Int, month: Int, day: Int): String? {
         if (month != 5 && month != 6) return null
         if (month == 5 && (day < 8 || day > 14) || month == 6 && (day < 15 || day > 21)) return null
@@ -309,8 +312,8 @@ object LunarCalendarFestivalUtils {
 
         if (year != currentYear) return null
 
-        val firstDayOfMonth = LocalDate(currentYear, month, 1)
-        val weekDate = firstDayOfMonth.dayOfWeek.isoDayNumber % 7
+        val firstday = LocalDate(currentYear, month, 1)
+        val weekDate = firstday.dayOfWeek.isoDayNumber % 7
 
         when (month) {
             5 -> if (day == 15 - weekDate) return "母亲节"
@@ -327,6 +330,7 @@ object LunarCalendarFestivalUtils {
      * @param day
      * @return
      */
+    @OptIn(ExperimentalTime::class)
     private fun thanksgiving(year: Int, month: Int, day: Int): String? {
         if (month != 11) return null
         if (day < 19 || day > 28) return null
@@ -336,8 +340,8 @@ object LunarCalendarFestivalUtils {
 
         if (year != currentYear) return null
 
-        val firstDayOfMonth = LocalDate(currentYear, month, 1)
-        val weekDate = firstDayOfMonth.dayOfWeek.isoDayNumber % 7
+        val firstday = LocalDate(currentYear, month, 1)
+        val weekDate = firstday.dayOfWeek.isoDayNumber % 7
 
         return if (day == 29 - weekDate + 4) "感恩节" else null
     }
@@ -446,8 +450,8 @@ object LunarCalendarFestivalUtils {
 
         // 设置节气
         if (ld.lunarTerm != null) {
-            val month = currentDate.monthNumber
-            val day = currentDate.dayOfMonth
+            val month = currentDate.month.number
+            val day = currentDate.day
             ld.lunarTerm = when (day) {
                 sTerm(year, (month - 1) * 2) -> solarTerms[(month - 1) * 2]
                 sTerm(year, (month - 1) * 2 + 1) -> solarTerms[(month - 1) * 2 + 1]
@@ -457,8 +461,8 @@ object LunarCalendarFestivalUtils {
 
         // 设置阳历节日
         if (ld.solarFestival != null) {
-            val month = currentDate.monthNumber
-            val day = currentDate.dayOfMonth
+            val month = currentDate.month.number
+            val day = currentDate.day
             var solarFestival = ""
 
             for (s in solarHoliday) {

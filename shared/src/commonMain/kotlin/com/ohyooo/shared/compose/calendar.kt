@@ -68,7 +68,7 @@ fun CalendarMain() {
     var currentMonth by remember { mutableStateOf(currentLocaleDate) }
 
     val state = rememberSaveable(saver = LazyGridState.Saver) {
-        LazyGridState(prevDaySize - currentLocaleDate.dayOfMonth + 2, 0)
+        LazyGridState(firstVisibleItemIndex = (prevDaySize - currentLocaleDate.day + 2), firstVisibleItemScrollOffset = 0)
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -78,7 +78,7 @@ fun CalendarMain() {
     Column(modifier = Modifier.background(mainBgColor)) {
         Clock {
             coroutineScope.launch {
-                state.animateScrollToItem(prevDaySize - currentLocaleDate.dayOfMonth + 2)
+                state.animateScrollToItem((prevDaySize - currentLocaleDate.day + 2))
                 delay(AnimationConstants.DefaultDurationMillis.toLong())
                 scrollState.onScroll(true)
             }
@@ -152,7 +152,7 @@ fun CalendarWeekDays() {
     })
 }
 
-fun monthDays(year: Int, month: Month): Int {
+fun monthDays(year: Int, month: Month): Long {
     val start = LocalDate(year, month, 1)
     val end = start.plus(1, DateTimeUnit.MONTH)
     return start.until(end, DateTimeUnit.DAY)
@@ -162,7 +162,7 @@ fun monthDays(year: Int, month: Month): Int {
 fun CalendarMonth(state: LazyGridState, scrollState: StateClass, nowLocaleDate: LocalDate, days: Int, onDateChange: (LocalDate) -> Unit) {
     var currentMonthRange by remember {
         val nowLocaleDateLengthOfMonth = monthDays(nowLocaleDate.year, nowLocaleDate.month)
-        mutableStateOf(state.firstVisibleItemIndex..days + nowLocaleDateLengthOfMonth - nowLocaleDate.dayOfMonth + 1)
+        mutableStateOf(state.firstVisibleItemIndex..days + nowLocaleDateLengthOfMonth - nowLocaleDate.day + 1)
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -179,9 +179,9 @@ fun CalendarMonth(state: LazyGridState, scrollState: StateClass, nowLocaleDate: 
         job = coroutineScope.launch {
             delay(AnimationConstants.DefaultDurationMillis.toLong())
             if (!this.isActive) return@launch
-            currentMonthRange = getHighlightRange(state.firstVisibleItemIndex..state.firstVisibleItemIndex + state.layoutInfo.visibleItemsInfo.size)
+            currentMonthRange = getHighlightRange(state.firstVisibleItemIndex.toLong()..state.firstVisibleItemIndex + state.layoutInfo.visibleItemsInfo.size)
             if (!this.isActive) return@launch
-            onDateChange(getMonthDay(currentMonthRange.first))
+            onDateChange(getMonthDay(currentMonthRange.first.toInt()))
         }
     }
 
