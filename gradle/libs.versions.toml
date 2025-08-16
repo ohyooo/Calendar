@@ -6,8 +6,8 @@ compile_sdk = "35"
 version_code = "10"
 version_name = "2.10"
 
-agp = "8.10.1"
-kotlin = "2.1.21"
+agp = "8.12.0"
+kotlin = "2.2.10"
 compose_compiler = "1.5.10"
 
 [plugins]
@@ -16,16 +16,16 @@ alp = { id = "com.android.library", version.ref = "agp" }
 kgp = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ks = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kmm = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-jc = { id = "org.jetbrains.compose", version = "1.9.0+" }
+jc = { id = "org.jetbrains.compose", version = "1.9.10+" }
 cc = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 [libraries]
 # Kotlin
 kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2"
-kotlinx-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.6.2"
+kotlinx-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.7.1-0.6.x-compat"
 
 # AndroidX
-androidx-core-ktx = "androidx.core:core-ktx:1.16.0"
+androidx-core-ktx = "androidx.core:core-ktx:1.17.0"
 androidx-activity = "androidx.activity:activity:1.10.1"
 androidx-compose-activity = "androidx.activity:activity-compose:1.10.1"
 androidx-startup-runtime = "androidx.startup:startup-runtime:1.2.0"
