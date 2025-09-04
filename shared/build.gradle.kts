@@ -76,4 +76,4 @@ android {
     }
 }
 
-task("testClasses")
+tasks.register("testClasses")
