@@ -7,7 +7,7 @@ version_code = "10"
 version_name = "2.10"
 
 agp = "8.13.0"
-kotlin = "2.2.10"
+kotlin = "2.2.20"
 compose_compiler = "1.5.10"
 
 [plugins]
@@ -26,8 +26,8 @@ kotlinx-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.7.1-0.6.x-compat"
 
 # AndroidX
 androidx-core-ktx = "androidx.core:core-ktx:1.17.0"
-androidx-activity = "androidx.activity:activity:1.10.1"
-androidx-compose-activity = "androidx.activity:activity-compose:1.10.1"
+androidx-activity = "androidx.activity:activity:1.11.0"
+androidx-compose-activity = "androidx.activity:activity-compose:1.11.0"
 androidx-startup-runtime = "androidx.startup:startup-runtime:1.2.0"
 
 [bundles]
