@@ -34,10 +34,10 @@ plugins {
 allprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_25)
+            jvmTarget.set(JvmTarget.JVM_21)
             freeCompilerArgs.addAll(
                 listOf(
-                    "-Xbackend-threads=4", "-Xcontext-parameters", "-jvm-target=25"
+                    "-Xbackend-threads=4", "-Xcontext-parameters", "-jvm-target=21"
                 )
             )
         }
