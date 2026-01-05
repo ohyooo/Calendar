@@ -12,7 +12,48 @@ group = "com.ohyooo"
 version = "1.0.0"
 
 kotlin {
-    androidTarget()
+    androidLibrary {
+        namespace = "com.ohyooo.shared"
+        compileSdk = libs.versions.compile.sdk.get().toInt()
+        minSdk = libs.versions.min.sdk.get().toInt()
+
+        withJava() // enable java compilation support
+        withHostTestBuilder {}.configure {}
+        withDeviceTestBuilder {
+            sourceSetTreeName = "test"
+        }
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+        }
+
+//        compilerOptions.configure {
+//            jvmTarget.set(
+//                org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+//            )
+//        }
+        kotlin {
+            jvmToolchain(21)
+        }
+    }
+//    android {
+//        namespace = "com.ohyooo.shared"
+//
+////        sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+////        sourceSets["main"].res.srcDirs("src/androidMain/res")
+////        sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+//
+//        compileSdk = libs.versions.compile.sdk.get().toInt()
+////        defaultConfig {
+////            minSdk = libs.versions.min.sdk.get().toInt()
+////        }
+////        compileOptions {
+////            sourceCompatibility = JavaVersion.VERSION_21
+////            targetCompatibility = JavaVersion.VERSION_21
+////        }
+//        kotlin {
+//            jvmToolchain(21)
+//        }
+//    }
     jvm("desktop")
     wasmJs {
         outputModuleName = "shared"
@@ -56,24 +97,6 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.ohyooo.shared"
 
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
-
-    compileSdk = libs.versions.compile.sdk.get().toInt()
-    defaultConfig {
-        minSdk = libs.versions.min.sdk.get().toInt()
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-    kotlin {
-        jvmToolchain(21)
-    }
-}
 
 tasks.register("testClasses")
