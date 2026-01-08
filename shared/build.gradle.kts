@@ -26,58 +26,31 @@ kotlin {
             sourceSetTreeName = "test"
         }
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25)
         }
         compilations.all {
             compileTaskProvider.configure {
-                compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+                compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25)
             }
         }
+    }
 
-//        compilerOptions.configure {
-//            jvmTarget.set(
-//                org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
-//            )
-//        }
-        kotlin {
-            jvmToolchain(21)
-        }
-    }
-//    android {
-//        namespace = "com.ohyooo.shared"
-//
-////        sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-////        sourceSets["main"].res.srcDirs("src/androidMain/res")
-////        sourceSets["main"].resources.srcDirs("src/commonMain/resources")
-//
-//        compileSdk = libs.versions.compile.sdk.get().toInt()
-////        defaultConfig {
-////            minSdk = libs.versions.min.sdk.get().toInt()
-////        }
-////        compileOptions {
-////            sourceCompatibility = JavaVersion.VERSION_21
-////            targetCompatibility = JavaVersion.VERSION_21
-////        }
-//        kotlin {
-//            jvmToolchain(21)
-//        }
-//    }
     jvm("desktop")
-    wasmJs {
-        outputModuleName = "shared"
-        browser {
-            commonWebpackConfig {
-                outputFileName = "shared.js"
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static = (static ?: mutableListOf()).apply {
-                        // Serve sources to debug inside browser
-                        add(project.projectDir.path)
-                    }
-                }
-            }
-        }
-        binaries.executable()
-    }
+//    wasmJs {
+//        outputModuleName = "shared"
+//        browser {
+//            commonWebpackConfig {
+//                outputFileName = "shared.js"
+//                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+//                    static = (static ?: mutableListOf()).apply {
+//                        // Serve sources to debug inside browser
+//                        add(project.projectDir.path)
+//                    }
+//                }
+//            }
+//        }
+//        binaries.executable()
+//    }
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -103,6 +76,7 @@ kotlin {
             }
         }
     }
+    jvmToolchain(25)
 }
 
 
