@@ -15,7 +15,7 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@main
         with:
-          distribution: 'zulu'
+          distribution: 'jetbrains'
           java-version: '21'
           java-package: jdk
           cache: 'gradle'
