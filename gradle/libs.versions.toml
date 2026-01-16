@@ -6,7 +6,7 @@ compile_sdk = "36"
 version_code = "10"
 version_name = "2.10"
 
-agp = "8.13.2"
+agp = "9.0.0"
 kotlin = "2.3.0"
 
 
@@ -26,8 +26,8 @@ kotlinx-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.7.1"
 
 # AndroidX
 androidx-core-ktx = "androidx.core:core-ktx:1.17.0"
-androidx-activity = "androidx.activity:activity:1.11.0"
-androidx-compose-activity = "androidx.activity:activity-compose:1.11.0"
+androidx-activity = "androidx.activity:activity:1.12.2"
+androidx-compose-activity = "androidx.activity:activity-compose:1.12.2"
 androidx-startup-runtime = "androidx.startup:startup-runtime:1.2.0"
 
 [bundles]

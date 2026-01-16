@@ -2,7 +2,6 @@
 
 plugins {
     alias(libs.plugins.agp)
-    alias(libs.plugins.kgp)
     alias(libs.plugins.jc)
     alias(libs.plugins.cc)
 }
@@ -44,8 +43,8 @@ android {
         signingConfig = signingConfigs.getByName("debug")
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
     }
     buildTypes {
         debug {

@@ -25,7 +25,6 @@ plugins {
     alias(libs.plugins.ks) apply false
     alias(libs.plugins.agp) apply false
     alias(libs.plugins.alp) apply false
-    alias(libs.plugins.kgp) apply false
     alias(libs.plugins.jc) apply false
     alias(libs.plugins.cc) apply false
 }
@@ -34,10 +33,10 @@ plugins {
 allprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
+            jvmTarget.set(JvmTarget.JVM_25)
             freeCompilerArgs.addAll(
                 listOf(
-                    "-Xbackend-threads=4", "-Xcontext-parameters", "-jvm-target=21"
+                    "-Xbackend-threads=4", "-Xcontext-parameters", "-jvm-target=25"
                 )
             )
         }
