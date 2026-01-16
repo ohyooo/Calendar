@@ -39,9 +39,6 @@ kotlin {
 //                org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
 //            )
 //        }
-        kotlin {
-            jvmToolchain(25)
-        }
     }
 //    android {
 //        namespace = "com.ohyooo.shared"
@@ -63,6 +60,7 @@ kotlin {
 //        }
 //    }
     jvm("desktop")
+    jvmToolchain(25)
     wasmJs {
         outputModuleName = "shared"
         browser {
@@ -104,7 +102,5 @@ kotlin {
         }
     }
 }
-
-
 
 tasks.register("testClasses")
