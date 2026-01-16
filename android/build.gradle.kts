@@ -66,6 +66,10 @@ java {
     }
 }
 
+kotlin {
+    jvmToolchain(25)
+}
+
 dependencies {
     implementation(project(":shared"))
     implementation(libs.androidx.activity.compose)
