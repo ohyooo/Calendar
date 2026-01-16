@@ -92,7 +92,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                api(libs.androidx.compose.activity)
+                api(libs.androidx.activity.compose)
                 api(libs.androidx.core.ktx)
                 api(libs.androidx.startup.runtime)
             }

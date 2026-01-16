@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
     implementation(project(":shared"))
-    implementation(libs.androidx.compose.activity)
+    implementation(libs.androidx.activity.compose)
 }
 
 android {
