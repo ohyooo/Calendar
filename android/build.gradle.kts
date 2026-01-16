@@ -60,6 +60,12 @@ android {
     }
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(25))
+    }
+}
+
 dependencies {
     implementation(project(":shared"))
     implementation(libs.androidx.activity.compose)
