@@ -14,11 +14,6 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    implementation(project(":shared"))
-    implementation(libs.androidx.activity.compose)
-}
-
 android {
     signingConfigs {
         getByName("debug") {
@@ -63,4 +58,9 @@ android {
         aidl = false
         shaders = false
     }
+}
+
+dependencies {
+    implementation(project(":shared"))
+    implementation(libs.androidx.activity.compose)
 }
