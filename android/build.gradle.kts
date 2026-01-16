@@ -31,14 +31,14 @@ android {
             enableV4Signing = true
         }
     }
-    namespace = libs.versions.application.id.get()
+    namespace = "com.ohyooo.calendar"
     compileSdk = libs.versions.compile.sdk.get().toInt()
     defaultConfig {
-        applicationId = libs.versions.application.id.get()
+        applicationId = "com.ohyooo.calendar"
         minSdk = libs.versions.min.sdk.get().toInt()
         targetSdk = libs.versions.target.sdk.get().toInt()
-        versionCode = libs.versions.version.code.get().toInt()
-        versionName = libs.versions.target.sdk.get() + rootProject.extra["gitVersion"]
+        versionCode = 10
+        versionName = "2.10" + rootProject.extra["gitVersion"]
         proguardFile("consumer-rules.pro")
         signingConfig = signingConfigs.getByName("debug")
     }
@@ -61,7 +61,6 @@ android {
         // Disable unused AGP features
         buildConfig = false
         aidl = false
-        renderScript = false
         shaders = false
     }
 }
