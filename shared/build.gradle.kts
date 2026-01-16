@@ -33,32 +33,11 @@ kotlin {
                 compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25)
             }
         }
+        androidResources {
+            enable = true
+        }
 
-//        compilerOptions.configure {
-//            jvmTarget.set(
-//                org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
-//            )
-//        }
     }
-//    android {
-//        namespace = "com.ohyooo.shared"
-//
-////        sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-////        sourceSets["main"].res.srcDirs("src/androidMain/res")
-////        sourceSets["main"].resources.srcDirs("src/commonMain/resources")
-//
-//        compileSdk = libs.versions.compile.sdk.get().toInt()
-////        defaultConfig {
-////            minSdk = libs.versions.min.sdk.get().toInt()
-////        }
-////        compileOptions {
-////            sourceCompatibility = JavaVersion.VERSION_21
-////            targetCompatibility = JavaVersion.VERSION_21
-////        }
-//        kotlin {
-//            jvmToolchain(21)
-//        }
-//    }
     jvm("desktop")
     jvmToolchain(25)
     wasmJs {
@@ -67,10 +46,7 @@ kotlin {
             commonWebpackConfig {
                 outputFileName = "shared.js"
                 devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static = (static ?: mutableListOf()).apply {
-                        // Serve sources to debug inside browser
-                        add(project.projectDir.path)
-                    }
+                    static(project.projectDir.path)
                 }
             }
         }
