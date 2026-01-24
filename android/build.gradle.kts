@@ -68,6 +68,7 @@ android {
             path = file("src/main/cpp/CMakeLists.txt")
         }
     }
+    sourceSets["main"].jniLibs.directories.add(layout.buildDirectory.dir("generated/jniLibs").get().asFile.path)
 }
 
 java {
@@ -106,7 +107,7 @@ val copyKotlinNativeLibs by tasks.registering(Copy::class) {
             into(abi)
         }
     }
-    into(layout.projectDirectory.dir("src/main/jniLibs"))
+    into(layout.buildDirectory.dir("generated/jniLibs"))
 }
 
 tasks.named("preBuild") {
