@@ -11,4 +11,4 @@ plugins {
 
 rootProject.name = "Calendar"
 
-include(":android", ":desktop", ":shared")
+include(":android", ":desktop", ":shared", ":native")

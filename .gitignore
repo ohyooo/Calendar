@@ -122,3 +122,4 @@ screenshots
 */webpack*
 kotlin-js-store
 .kotlin
+*/.*
