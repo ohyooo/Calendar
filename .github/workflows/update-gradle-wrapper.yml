@@ -11,6 +11,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@main
+        with:
+          submodules: recursive
+          persist-credentials: false
 
       - name: Setup JDK
         uses: actions/setup-java@main
