@@ -27,7 +27,12 @@ android {
         }
     }
     namespace = "com.ohyooo.calendar"
-    compileSdk = libs.versions.compile.sdk.get().toInt()
+
+    compileSdk {
+        version = release(libs.versions.compile.sdk.get().toInt()) {
+            minorApiLevel = libs.versions.compile.minor.get().toInt()
+        }
+    }
     defaultConfig {
         applicationId = "com.ohyooo.calendar"
         minSdk = libs.versions.min.sdk.get().toInt()
