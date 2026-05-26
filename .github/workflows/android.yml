@@ -45,7 +45,7 @@ jobs:
             gradle-${{ runner.os }}-
 
       - name: Build APK
-        run: chmod +x gradlew && ./gradlew :app:assembleRelease --build-cache
+        run: chmod +x gradlew && ./gradlew :android:assembleRelease --build-cache
 
       - name: Save Gradle cache
         if: success()
