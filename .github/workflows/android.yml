@@ -11,52 +11,57 @@ permissions:
 
 jobs:
   build:
-
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@main
         with:
           submodules: recursive
 
-      - name: Get Time
-        id: time
-        uses: nanzm/get-time-action@master
-        with:
-          timeZone: 8
-          format: 'YYYYMMDDHHmmss'
-     
       - name: Setup JDK
         uses: actions/setup-java@main
         with:
-          distribution: 'jetbrains'
+          distribution: 'zulu'
           java-version: '21'
           java-package: jdk
-          cache: 'gradle'
-          
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+
+      - name: Restore Gradle cache
+        id: gradle-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.gradle/build-cache
+            .gradle
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}-${{ github.run_id }}
+          restore-keys: |
+            gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}-
+            gradle-${{ runner.os }}-
 
       - name: Build APK
-        run: ./gradlew :android:assembleRelease
+        run: chmod +x gradlew && ./gradlew :app:assembleRelease --build-cache
 
-      # - name: Upload to release
-      #   uses: svenstaro/upload-release-action@master
-      #   with:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #     file: android/build/outputs/apk/release/*.apk
-      #     asset_name: Calendar
-      #     tag: ${{ github.ref }}_${{ steps.time.outputs.time }}
-      #     overwrite: true
-      #     file_glob: true
+      - name: Save Gradle cache
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.gradle/build-cache
+            .gradle
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}-${{ github.run_id }}
 
-      # - name: Remove old Releases
-      #   uses: dev-drprasad/delete-older-releases@master
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     keep_latest: 3
-      #     delete_tags: true
+      - name: Upload APK artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: |
+            app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Delete workflow runs
         uses: GitRML/delete-workflow-runs@main
