@@ -1,4 +1,4 @@
-name: Android CI
+name: macOS arm64 CI
 
 on:
   push:
@@ -7,11 +7,11 @@ on:
 
 permissions:
   actions: write
-  contents: write
+  contents: read
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@main
@@ -27,8 +27,6 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
-        with:
-          dependency-graph: generate-and-submit
 
       - name: Restore Gradle cache
         id: gradle-cache
@@ -39,13 +37,13 @@ jobs:
             ~/.gradle/wrapper
             ~/.gradle/build-cache
             .gradle
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}-${{ github.run_id }}
+          key: gradle-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}-${{ github.run_id }}
           restore-keys: |
-            gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}-
-            gradle-${{ runner.os }}-
+            gradle-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}-
+            gradle-${{ runner.os }}-${{ runner.arch }}-
 
-      - name: Build APK
-        run: chmod +x gradlew && ./gradlew :android:assembleRelease --build-cache
+      - name: Build macOS arm64 DMG
+        run: chmod +x gradlew && ./gradlew :desktop:packageDmg --build-cache
 
       - name: Save Gradle cache
         if: success()
@@ -56,15 +54,15 @@ jobs:
             ~/.gradle/wrapper
             ~/.gradle/build-cache
             .gradle
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}-${{ github.run_id }}
+          key: gradle-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}-${{ github.run_id }}
 
-      - name: Upload APK artifact
+      - name: Upload macOS arm64 artifact
         if: success()
         uses: actions/upload-artifact@v7
         with:
-          name: app-release
+          name: calendar-macos-arm64
           path: |
-            android/build/outputs/apk/release/*.apk
+            desktop/build/compose/binaries/main/dmg/*.dmg
           if-no-files-found: error
           retention-days: 7
 
