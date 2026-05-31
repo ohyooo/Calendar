@@ -42,8 +42,14 @@ jobs:
             gradle-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}-
             gradle-${{ runner.os }}-${{ runner.arch }}-
 
-      - name: Build macOS arm64 DMG
-        run: chmod +x gradlew && ./gradlew :desktop:packageDmg --build-cache
+      - name: Build macOS arm64 native artifacts
+        run: |
+          chmod +x gradlew
+          ./gradlew \
+            :shared:linkDebugSharedMacosArm64 \
+            :ui:linkDebugFrameworkMacosArm64 \
+            --no-configure-on-demand \
+            --build-cache
 
       - name: Save Gradle cache
         if: success()
@@ -56,13 +62,16 @@ jobs:
             .gradle
           key: gradle-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}-${{ github.run_id }}
 
-      - name: Upload macOS arm64 artifact
+      - name: Upload macOS arm64 native artifacts
         if: success()
         uses: actions/upload-artifact@v7
         with:
-          name: calendar-macos-arm64
+          name: calendar-macos-arm64-native
           path: |
-            desktop/build/compose/binaries/main/dmg/*.dmg
+            shared/build/bin/macosArm64/debugShared/libshared.dylib
+            shared/build/bin/macosArm64/debugShared/libshared_api.h
+            shared/build/bin/macosArm64/debugShared/libshared.dylib.dSYM
+            ui/build/bin/macosArm64/debugFramework/ui.framework
           if-no-files-found: error
           retention-days: 7
 

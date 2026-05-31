@@ -56,11 +56,11 @@ androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "
 
 
 # Compose
-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
-compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
-compose-material-icons-extended = "androidx.compose.material:material-icons-extended:1.7.8"
-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose" }
-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose" }
+compose-material = { module = "org.jetbrains.material:material", version.ref = "compose" }
+compose-material-icons-extended = "org.jetbrains.material:material-icons-extended:1.7.3"
+compose-runtime = { module = "org.jetbrains.runtime:runtime", version.ref = "compose" }
+compose-ui = { module = "org.jetbrains.ui:ui", version.ref = "compose" }
+compose-ui-tooling-preview = { module = "org.jetbrains.ui:ui-tooling-preview", version.ref = "compose" }
+compose-ui-tooling = { module = "org.jetbrains.ui:ui-tooling", version.ref = "compose" }
 

@@ -1,14 +1,11 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kmm)
-    alias(libs.plugins.jc)
     alias(libs.plugins.alp)
     alias(libs.plugins.ks)
-    alias(libs.plugins.cc)
 }
 
 group = "com.ohyooo"
@@ -33,34 +30,24 @@ kotlin {
                 compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
             }
         }
-        androidResources {
-            enable = true
-        }
-
     }
     jvm("desktop")
+    macosArm64 {
+        binaries {
+            sharedLib {
+                baseName = "shared"
+            }
+        }
+    }
+    iosArm64()
     jvmToolchain(21)
     wasmJs {
         outputModuleName = "shared"
-        browser {
-            commonWebpackConfig {
-                outputFileName = "shared.js"
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static(project.projectDir.path)
-                }
-            }
-        }
-        binaries.executable()
+        browser()
     }
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material)
-                implementation(compose.components.resources)
-                implementation(compose.material3)
-                implementation(compose.materialIconsExtended)
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.datetime)
             }
@@ -68,18 +55,6 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-            }
-        }
-        val androidMain by getting {
-            dependencies {
-                api(libs.androidx.activity.compose)
-                api(libs.androidx.core.ktx)
-                api(libs.androidx.startup.runtime)
-            }
-        }
-        val desktopMain by getting {
-            dependencies {
-                api(compose.preview)
             }
         }
     }
