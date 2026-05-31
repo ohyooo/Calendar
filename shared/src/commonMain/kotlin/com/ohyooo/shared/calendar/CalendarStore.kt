@@ -33,29 +33,13 @@ class CalendarStore(
     private var viewportJob: Job? = null
 
     init {
-        clockJob = scope.launch {
-            while (isActive) {
-                reduce { currentState ->
-                    currentState.copy(clock = CalendarDateCalculator.clockUiState(clock.now()))
-                }
-                delay(1000)
-            }
-        }
+        clockJob = startClock()
     }
 
     fun dispatch(intent: CalendarIntent) {
         when (intent) {
             CalendarIntent.TodaySelected -> scrollTo(_state.value.initialFirstVisibleItemIndex)
-            is CalendarIntent.MonthNavigationSelected -> {
-                val currentState = _state.value
-                val targetIndex = CalendarDateCalculator.targetIndexFor(
-                    direction = intent.direction,
-                    firstVisibleItemIndex = currentState.firstVisibleItemIndex,
-                    totalDayCount = currentState.totalDayCount,
-                )
-                scrollTo(targetIndex)
-            }
-
+            is CalendarIntent.MonthNavigationSelected -> scrollTo(monthNavigationTarget(intent.direction))
             is CalendarIntent.ViewportChanged -> onViewportChanged(intent)
         }
     }
@@ -63,6 +47,24 @@ class CalendarStore(
     fun dispose() {
         clockJob?.cancel()
         viewportJob?.cancel()
+    }
+
+    private fun startClock(): Job = scope.launch {
+        while (isActive) {
+            reduce { currentState ->
+                currentState.copy(clock = CalendarDateCalculator.clockUiState(clock.now()))
+            }
+            delay(1000)
+        }
+    }
+
+    private fun monthNavigationTarget(direction: CalendarScrollDirection): Int {
+        val currentState = _state.value
+        return CalendarDateCalculator.targetIndexFor(
+            direction = direction,
+            firstVisibleItemIndex = currentState.firstVisibleItemIndex,
+            totalDayCount = currentState.totalDayCount,
+        )
     }
 
     private fun onViewportChanged(intent: CalendarIntent.ViewportChanged) {
@@ -82,28 +84,31 @@ class CalendarStore(
 
         viewportJob?.cancel()
         viewportJob = scope.launch {
-            if (!intent.force) {
-                delay(scrollSettleDelayMillis)
-            }
-            val settledState = _state.value
-            val visibleEndIndex = (firstVisibleItemIndex + visibleItemCount)
-                .coerceAtMost((settledState.totalDayCount - 1).coerceAtLeast(0))
-            val visibleRange = firstVisibleItemIndex..visibleEndIndex
-            val highlightedRange = CalendarDateCalculator.highlightedRange(
-                startDate = settledState.calendarStartDate,
-                visibleRange = visibleRange,
-            )
-            val currentMonth = CalendarDateCalculator.dateForIndex(
-                startDate = settledState.calendarStartDate,
-                index = highlightedRange.first,
-            )
+            updateHighlightedMonthAfterScrollSettles(intent.force)
+        }
+    }
 
-            reduce { state ->
-                state.copy(
-                    highlightedRange = highlightedRange,
-                    currentMonth = currentMonth,
-                )
-            }
+    private suspend fun updateHighlightedMonthAfterScrollSettles(force: Boolean) {
+        if (!force) {
+            delay(scrollSettleDelayMillis)
+        }
+
+        val settledState = _state.value
+        val visibleRange = settledState.visibleRange()
+        val highlightedRange = CalendarDateCalculator.highlightedRange(
+            startDate = settledState.calendarStartDate,
+            visibleRange = visibleRange,
+        )
+        val currentMonth = CalendarDateCalculator.dateForIndex(
+            startDate = settledState.calendarStartDate,
+            index = highlightedRange.first,
+        )
+
+        reduce { state ->
+            state.copy(
+                highlightedRange = highlightedRange,
+                currentMonth = currentMonth,
+            )
         }
     }
 
@@ -117,6 +122,12 @@ class CalendarStore(
 
     private inline fun reduce(transform: (CalendarUiState) -> CalendarUiState) {
         _state.update(transform)
+    }
+
+    private fun CalendarUiState.visibleRange(): IntRange {
+        val lastIndex = (totalDayCount - 1).coerceAtLeast(0)
+        val visibleEndIndex = (firstVisibleItemIndex + visibleItemCount).coerceAtMost(lastIndex)
+        return firstVisibleItemIndex..visibleEndIndex
     }
 }
 

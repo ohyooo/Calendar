@@ -13,17 +13,18 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.until
 
 object CalendarDateCalculator {
+    private const val DAYS_IN_CALENDAR_PAGE = 7 * 6
     private val baseDate = LocalDate(1900, 1, 31)
     private val baseDateDayOfWeek = baseDate.dayOfWeek.ordinal + 1
-    private const val DAYS_IN_CALENDAR_PAGE = 7 * 6
 
     fun initialState(now: LocalDateTime): CalendarUiState {
         val today = now.date
         val previousDayCount = previousDayCount(today)
         val startDate = today.minusDays(previousDayCount)
         val initialFirstVisibleItemIndex = previousDayCount - today.day + 2
+        val currentMonthDayCount = monthDays(today.year, today.month)
         val highlightedRange = initialFirstVisibleItemIndex..
-                previousDayCount + monthDays(today.year, today.month) - today.day + 1
+                previousDayCount + currentMonthDayCount - today.day + 1
 
         return CalendarUiState(
             clock = clockUiState(now),
@@ -40,38 +41,20 @@ object CalendarDateCalculator {
     }
 
     fun clockUiState(now: LocalDateTime): ClockUiState {
-        val weekday = dayOfWeek(now.dayOfWeek.ordinal + 1)
-        val fullDate = "${now.year}年${now.month.number}月${now.day}日"
-        val lunarDate = lunarMonthDay(now.date)
-
         return ClockUiState(
             time = "${now.hour.padded()}:${now.minute.padded()}:${now.second.padded()}",
-            date = "$fullDate，星期$weekday $lunarDate",
+            date = "${now.year}年${now.month.number}月${now.day}日，星期${weekdayText(now)} ${lunarMonthDay(now.date)}",
         )
     }
 
-    fun monthTitle(date: LocalDate): String {
-        return "${date.year}年${date.month.number}月"
-    }
+    fun monthTitle(date: LocalDate): String = "${date.year}年${date.month.number}月"
 
-    fun dateForIndex(startDate: LocalDate, index: Int): LocalDate {
-        return startDate.plus(DatePeriod(days = index - 1))
-    }
+    fun dateForIndex(startDate: LocalDate, index: Int): LocalDate = startDate.plus(DatePeriod(days = index - 1))
 
     fun dayText(startDate: LocalDate, index: Int): String {
         return try {
             val date = dateForIndex(startDate, index)
-            val lunarDate = LunarDate().apply {
-                lunarDay = ""
-                lunarFestival = ""
-                lunarTerm = ""
-            }
-            LunarCalendarFestivalUtils.initLunarCalendarInfo(date, lunarDate)
-            val subText = lunarDate.lunarFestival.orEmpty()
-                .ifBlank { lunarDate.lunarTerm.orEmpty() }
-                .ifBlank { lunarDate.lunarDay }
-
-            "${date.day}\n$subText"
+            "${date.day}\n${lunarDaySummary(date)}"
         } catch (e: Exception) {
             index.toString()
         }
@@ -79,31 +62,33 @@ object CalendarDateCalculator {
 
     fun highlightedRange(startDate: LocalDate, visibleRange: IntRange): IntRange {
         var currentMonthKey: Int? = null
-        var currentMonthDayCount = 0
+        var currentMonthStart = visibleRange.first
+        var currentMonthDays = 0
         var maxMonthDayCount = 0
-        var lastMaxDaysIndex = visibleRange.first
+        var highlightedStart = visibleRange.first
         var visibleMonthCount = 0
 
         visibleRange.forEach { index ->
             val date = dateForIndex(startDate, index)
-            val monthKey = date.year * 12 + date.month.number
+            val monthKey = date.monthKey
 
             if (currentMonthKey == monthKey) {
-                currentMonthDayCount++
+                currentMonthDays++
             } else {
                 if (visibleMonthCount >= 2) return@forEach
                 visibleMonthCount++
-                currentMonthDayCount = 1
+                currentMonthStart = index
+                currentMonthDays = 1
                 currentMonthKey = monthKey
             }
 
-            if (currentMonthDayCount > maxMonthDayCount) {
-                maxMonthDayCount = currentMonthDayCount
-                lastMaxDaysIndex = index
+            if (currentMonthDays > maxMonthDayCount) {
+                maxMonthDayCount = currentMonthDays
+                highlightedStart = currentMonthStart
             }
         }
 
-        return lastMaxDaysIndex - maxMonthDayCount + 1..lastMaxDaysIndex
+        return highlightedStart until highlightedStart + maxMonthDayCount
     }
 
     fun targetIndexFor(direction: CalendarScrollDirection, firstVisibleItemIndex: Int, totalDayCount: Int): Int {
@@ -119,6 +104,22 @@ object CalendarDateCalculator {
         val start = LocalDate(year, month, 1)
         val end = start.plus(1, DateTimeUnit.MONTH)
         return start.until(end, DateTimeUnit.DAY).toInt()
+    }
+
+    private fun weekdayText(now: LocalDateTime): String {
+        return dayOfWeek(now.dayOfWeek.ordinal + 1)
+    }
+
+    private fun lunarDaySummary(date: LocalDate): String {
+        val lunarDate = LunarDate().apply {
+            lunarDay = ""
+            lunarFestival = ""
+            lunarTerm = ""
+        }
+        LunarCalendarFestivalUtils.initLunarCalendarInfo(date, lunarDate)
+        return lunarDate.lunarFestival.orEmpty()
+            .ifBlank { lunarDate.lunarTerm.orEmpty() }
+            .ifBlank { lunarDate.lunarDay.orEmpty() }
     }
 
     private fun lunarMonthDay(date: LocalDate): String {
@@ -138,4 +139,7 @@ object CalendarDateCalculator {
     private fun Int.padded(): String {
         return toString().padStart(2, '0')
     }
+
+    private val LocalDate.monthKey: Int
+        get() = year * 12 + month.number
 }
