@@ -4,7 +4,7 @@ target-sdk = "37"
 compile-sdk = "37"
 compile-minor = "0"
 
-agp = "9.5.0"
+agp = "9.5.1"
 kotlin = "2.4.21"
 workmanager = "2.8.1"
 serialization = "1.12.0"
@@ -30,8 +30,8 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 kotlinx-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.8.0-0.6.x-compat"
 
 # https://github.com/Kotlin/kotlinx.coroutines/releases
-kotlinx-coroutines-android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.12.0"
-kotlinx-coroutines-core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.12.0"
+kotlinx-coroutines-android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0"
+kotlinx-coroutines-core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0"
 
 # Google
 google-material = "com.google.android.material:material:1.14.0"
