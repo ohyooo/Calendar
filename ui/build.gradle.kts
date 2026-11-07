@@ -17,7 +17,11 @@ version = "1.0.0"
 kotlin {
     androidLibrary {
         namespace = "com.ohyooo.calendar.ui"
-        compileSdk = libs.versions.compile.sdk.get().toInt()
+        compileSdk {
+            version = release(libs.versions.compile.sdk.get().toInt()) {
+                minorApiLevel = libs.versions.compile.minor.get().toInt()
+            }
+        }
         minSdk = libs.versions.min.sdk.get().toInt()
 
         compilerOptions {
